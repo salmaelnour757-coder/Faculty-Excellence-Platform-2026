@@ -11,11 +11,15 @@
 //    --brand-secondary tokens instead of the old `branding` prop object, so
 //    the whole chrome recolors when an institution changes its theme.
 //
+// 3. 'admin-comms' now wires in CommCentre.jsx (compose/send from the
+//    template library editable in Settings > Communication) — it existed
+//    but had no nav entry, so it was unreachable until now.
+//
 // NOT YET updated: 'portfolio' still points at the old Portfolio.jsx (manual
 // upload) — Evidence (certificate-based) isn't built yet, so this is a
-// deliberate placeholder, not an oversight. Admin-side items (Faculty
-// Management, Analytics, admin Pathways) are also untouched pending their
-// own ports (Insight, Connect, Configuration's admin views).
+// deliberate placeholder, not an oversight. Other admin-side items (Faculty
+// Management, admin Pathways) are also untouched pending their own ports
+// (Connect, Configuration's admin views).
 
 import { useState } from 'react'
 import { supabase } from '../lib/supabase'
@@ -31,6 +35,7 @@ import OrgHierarchyAdmin from '../../infrastructure/configuration/OrgHierarchyAd
 import Portfolio from '../../modules/legacy/Portfolio'
 import InviteFaculty from '../../modules/legacy/InviteFaculty'
 import Settings from '../../modules/legacy/Settings'
+import CommCentre from '../../modules/legacy/CommCentre'
 
 export default function Shell({ currentUser, institution, onInstitutionUpdate }) {
   const [screen, setScreen] = useState('admin-dashboard')
@@ -47,6 +52,7 @@ export default function Shell({ currentUser, institution, onInstitutionUpdate })
     { id: 'admin-org',       label: 'Org structure' },
     { id: 'admin-analytics', label: 'Insight' },
     { id: 'admin-pathways',  label: 'Pathways admin' },
+    { id: 'admin-comms',     label: 'Communication Centre' },
     { id: 'admin-settings',  label: 'Settings' },
   ]
 
@@ -72,6 +78,7 @@ export default function Shell({ currentUser, institution, onInstitutionUpdate })
     'admin-analytics':    <Insight institution={institution} />,
     'admin-org':          <OrgHierarchyAdmin institution={institution} />,
     'admin-pathways':     <PathwaysAdmin institution={institution} />,
+    'admin-comms':        <CommCentre institution={institution} currentUser={currentUser} />,
     'admin-settings':     <Settings institution={institution} currentUser={currentUser} onUpdate={onInstitutionUpdate} />,
     'faculty-dashboard':  <FacultyDashboard institution={institution} currentUser={currentUser} branding={branding} setScreen={setScreen} />,
     'assess':             <Assess institution={institution} currentUser={currentUser} setScreen={setScreen} />,
