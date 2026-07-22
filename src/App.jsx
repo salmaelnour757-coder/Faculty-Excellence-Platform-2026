@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './shared/lib/supabase'
-import Auth from './modules/legacy/Auth'
+import Auth from './shared/components/Auth'
 import Shell from './shared/components/Shell'
-import Onboarding from './modules/legacy/Onboarding'
+import Onboarding from './shared/components/Onboarding'
 
 export default function App() {
   const [session, setSession]           = useState(null)
@@ -41,11 +41,12 @@ export default function App() {
 
   if (loading) return (
     <div style={{ display:'flex', alignItems:'center', justifyContent:'center',
-                  height:'100vh', fontFamily:'Arial,sans-serif', color:'#0D2B5E' }}>
+                  height:'100vh', fontFamily:'Arial,sans-serif', color:'var(--brand-primary)',
+                  background:'var(--surface-page)' }}>
       <div style={{ textAlign:'center' }}>
         <div style={{ fontSize:32, marginBottom:12 }}>⚡</div>
         <div style={{ fontWeight:'bold', fontSize:18 }}>Faculty Excellence Platform</div>
-        <div style={{ color:'#64748B', marginTop:6 }}>Loading...</div>
+        <div style={{ color:'var(--text-secondary)', marginTop:6 }}>Loading...</div>
       </div>
     </div>
   )
