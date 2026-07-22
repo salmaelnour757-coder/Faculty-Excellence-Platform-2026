@@ -26,6 +26,7 @@ import Develop from '../../modules/develop/Develop'
 import Evidence from '../../modules/evidence/Evidence'
 import PathwaysAdmin from '../../modules/develop/PathwaysAdmin'
 import Insight from '../../modules/insight/Insight'
+import Connect from '../../modules/connect/Connect'
 import OrgHierarchyAdmin from '../../infrastructure/configuration/OrgHierarchyAdmin'
 import Portfolio from '../../modules/legacy/Portfolio'
 import InviteFaculty from '../../modules/legacy/InviteFaculty'
@@ -54,6 +55,7 @@ export default function Shell({ currentUser, institution, onInstitutionUpdate })
     { id: 'assess',            label: 'Assess' },
     { id: 'develop',           label: 'Develop' },
     { id: 'evidence',         label: 'Evidence' },
+    { id: 'connect',          label: 'Connect' },
     { id: 'portfolio',        label: 'Old portfolio (legacy)' },
   ]
 
@@ -73,6 +75,7 @@ export default function Shell({ currentUser, institution, onInstitutionUpdate })
     'assess':             <Assess institution={institution} currentUser={currentUser} setScreen={setScreen} />,
     'develop':            <Develop institution={institution} currentUser={currentUser} setScreen={setScreen} />,
     'evidence':           <Evidence institution={institution} currentUser={currentUser} />,
+    'connect':            <Connect institution={institution} currentUser={currentUser} />,
     'portfolio':          <Portfolio institution={institution} currentUser={currentUser} />,
   }
 

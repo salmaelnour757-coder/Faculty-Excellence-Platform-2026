@@ -16,7 +16,7 @@ A configurable, institution-agnostic faculty development platform. Identifies fa
 | `src/modules/develop/` | Ported and consolidated — merges what used to be two separate, overlapping components (IDP + FacultyPathways) into one. Restyled. **Missing:** attendance + Jotform evaluation-status check (tracked in the module spec). |
 | `src/modules/evidence/` | Built — certificate auto-issuance (attendance + Jotform evaluation check), compiled record, print/export. |
 | `src/modules/develop/PathwaysAdmin.jsx` | Ported from PathwaysManagement.jsx (never wired into the old Shell) + new: jotform_form_id field, attendance-marking panel. |
-| `src/modules/connect/` | Empty — not yet built. |
+| `src/modules/connect/` | Built — Expert-tier directory (avg competence >= 4.0, computed live from Assess), mentoring request/accept/decline. |
 | `src/modules/insight/` | Built — three-tier drill-down heat map + metrics cards. Department scope uses domain-level columns, not item-level as the original spec called for (a scoped-down simplification). Role gating not yet enforced — reachable only via admin view for now. |
 | `src/infrastructure/configuration/OrgHierarchyAdmin.jsx` | Built — minimal college/department CRUD + faculty assignment. Insight depends on this being filled in. |
 | Database schema (SQL) | **Not in this repo, by design** — SQL migration files are delivered separately in chat, run directly in the Supabase SQL editor. Keeps schema/data operations out of git entirely. Two migrations so far: the complete base schema, then the org hierarchy (colleges/departments) — see chat history for the actual SQL. |
