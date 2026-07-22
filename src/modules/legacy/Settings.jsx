@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../shared/lib/supabase'
+import { Card, CardBody } from '../../shared/components/Card'
+import { Button } from '../../shared/components/Button'
+import { Pill } from '../../shared/components/Pill'
 
 const SECTIONS = [
   { id: 'institution',   icon: '🏛️', label: 'Institution Profile'    },
@@ -22,13 +25,13 @@ export default function Settings({ institution, currentUser, onUpdate }) {
       {/* Sidebar */}
       <div style={{
         width: 220, flexShrink: 0,
-        background: 'white', borderRadius: 10,
-        border: '1px solid #DDE3EF',
+        background: 'var(--surface-card)', borderRadius: 'var(--radius-card)',
+        border: '1px solid var(--border)',
         padding: 10,
-        boxShadow: '0 2px 12px rgba(13,43,94,.06)',
+        boxShadow: '0 1px 2px rgba(var(--shadow-color),0.04), 0 6px 16px rgba(var(--shadow-color),0.06)',
         alignSelf: 'flex-start'
       }}>
-        <div style={{ fontSize:11, fontWeight:700, color:'#64748B',
+        <div style={{ fontSize:11, fontWeight:700, color:'var(--text-secondary)',
                       textTransform:'uppercase', letterSpacing:.5,
                       padding:'4px 8px 10px' }}>
           Settings
@@ -37,13 +40,13 @@ export default function Settings({ institution, currentUser, onUpdate }) {
           <button key={s.id} onClick={() => setSection(s.id)}
             style={{
               display:'flex', alignItems:'center', gap:10,
-              width:'100%', padding:'9px 10px', borderRadius:8,
+              width:'100%', padding:'9px 10px', borderRadius:'var(--radius-control)',
               border:'none', cursor:'pointer', textAlign:'left',
               fontSize:13, fontWeight: section === s.id ? 700 : 400,
               marginBottom:2,
-              background: section === s.id ? '#EEF2FF' : 'transparent',
-              color: section === s.id ? '#0D2B5E' : '#64748B',
-              transition:'all .15s'
+              background: section === s.id ? 'var(--pill-bg)' : 'transparent',
+              color: section === s.id ? 'var(--brand-primary)' : 'var(--text-secondary)',
+              transition:'all var(--dur-panel) var(--ease)'
             }}>
             <span style={{ fontSize:16 }}>{s.icon}</span>
             {s.label}
@@ -71,38 +74,31 @@ export default function Settings({ institution, currentUser, onUpdate }) {
 
 function SettingsCard({ title, subtitle, children, onSave, saving }) {
   return (
-    <div style={{ background:'white', borderRadius:10, border:'1px solid #DDE3EF',
-                  boxShadow:'0 2px 12px rgba(13,43,94,.06)', marginBottom:16 }}>
-      <div style={{ padding:'16px 20px', borderBottom:'1px solid #DDE3EF' }}>
-        <div style={{ fontSize:15, fontWeight:700, color:'#0D2B5E' }}>{title}</div>
-        {subtitle && <div style={{ fontSize:13, color:'#64748B', marginTop:3 }}>{subtitle}</div>}
+    <Card hoverable={false} style={{ marginBottom:16 }}>
+      <div style={{ padding:'16px 20px', borderBottom:'1px solid var(--border)' }}>
+        <div style={{ fontSize:15, fontWeight:700, color:'var(--text-primary)' }}>{title}</div>
+        {subtitle && <div style={{ fontSize:13, color:'var(--text-secondary)', marginTop:3 }}>{subtitle}</div>}
       </div>
-      <div style={{ padding:'20px' }}>
+      <CardBody>
         {children}
         {onSave && (
-          <div style={{ marginTop:20, paddingTop:16, borderTop:'1px solid #F1F5F9' }}>
-            <button onClick={onSave} disabled={saving}
-              style={{
-                padding:'10px 24px', borderRadius:8, border:'none',
-                background: saving ? '#94A3B8' : '#0D2B5E',
-                color:'white', fontWeight:700, fontSize:13,
-                cursor: saving ? 'not-allowed' : 'pointer'
-              }}>
+          <div style={{ marginTop:20, paddingTop:16, borderTop:'1px solid var(--border)' }}>
+            <Button onClick={onSave} disabled={saving}>
               {saving ? 'Saving...' : '💾 Save Changes'}
-            </button>
+            </Button>
           </div>
         )}
-      </div>
-    </div>
+      </CardBody>
+    </Card>
   )
 }
 
 function Field({ label, children, hint }) {
   return (
     <div style={{ marginBottom:16 }}>
-      <label style={{ display:'block', fontWeight:600, color:'#0D2B5E',
+      <label style={{ display:'block', fontWeight:600, color:'var(--text-primary)',
                       fontSize:13, marginBottom:6 }}>{label}</label>
-      {hint && <div style={{ fontSize:12, color:'#64748B', marginBottom:6 }}>{hint}</div>}
+      {hint && <div style={{ fontSize:12, color:'var(--text-secondary)', marginBottom:6 }}>{hint}</div>}
       {children}
     </div>
   )
@@ -111,18 +107,18 @@ function Field({ label, children, hint }) {
 function Inp({ value, onChange, placeholder, type='text' }) {
   return (
     <input type={type} value={value} onChange={onChange} placeholder={placeholder}
-      style={{ width:'100%', padding:'10px 14px', borderRadius:8,
-               border:'1px solid #DDE3EF', fontSize:14, outline:'none',
-               boxSizing:'border-box', background:'white' }} />
+      style={{ width:'100%', padding:'10px 14px', borderRadius:'var(--radius-control)',
+               border:'1px solid var(--border)', fontSize:14, outline:'none',
+               boxSizing:'border-box', background:'var(--surface-card)', color:'var(--text-primary)' }} />
   )
 }
 
 function Sel({ value, onChange, children }) {
   return (
     <select value={value} onChange={onChange}
-      style={{ width:'100%', padding:'10px 14px', borderRadius:8,
-               border:'1px solid #DDE3EF', fontSize:14, outline:'none',
-               boxSizing:'border-box', background:'white' }}>
+      style={{ width:'100%', padding:'10px 14px', borderRadius:'var(--radius-control)',
+               border:'1px solid var(--border)', fontSize:14, outline:'none',
+               boxSizing:'border-box', background:'var(--surface-card)', color:'var(--text-primary)' }}>
       {children}
     </select>
   )
@@ -131,30 +127,27 @@ function Sel({ value, onChange, children }) {
 function Toggle({ label, desc, value, onChange, recommended }) {
   return (
     <div style={{ display:'flex', gap:14, alignItems:'flex-start',
-                  padding:'12px 0', borderBottom:'1px solid #F1F5F9' }}>
+                  padding:'12px 0', borderBottom:'1px solid var(--border)' }}>
       <button onClick={() => onChange(!value)}
         style={{
           width:46, height:26, borderRadius:13, border:'none', flexShrink:0,
-          background: value ? '#1A7B8C' : '#DDE3EF',
-          cursor:'pointer', position:'relative', transition:'background .2s'
+          background: value ? 'var(--brand-accent)' : 'var(--border)',
+          cursor:'pointer', position:'relative', transition:'background var(--dur-panel) var(--ease)'
         }}>
         <span style={{
           position:'absolute', top:3,
           left: value ? 23 : 3,
-          width:20, height:20, background:'white',
-          borderRadius:'50%', transition:'left .2s'
+          width:20, height:20, background:'var(--surface-card)',
+          borderRadius:'50%', transition:'left var(--dur-panel) var(--ease)'
         }} />
       </button>
       <div>
-        <div style={{ fontWeight:700, color:'#0D2B5E', fontSize:14,
+        <div style={{ fontWeight:700, color:'var(--text-primary)', fontSize:14,
                       display:'flex', alignItems:'center', gap:8 }}>
           {label}
-          {recommended && (
-            <span style={{ background:'#1A7B8C', color:'white', fontSize:11,
-                           padding:'2px 8px', borderRadius:8 }}>Recommended</span>
-          )}
+          {recommended && <Pill style={{ fontSize:11 }}>Recommended</Pill>}
         </div>
-        {desc && <div style={{ fontSize:12, color:'#64748B', marginTop:3 }}>{desc}</div>}
+        {desc && <div style={{ fontSize:12, color:'var(--text-secondary)', marginTop:3 }}>{desc}</div>}
       </div>
     </div>
   )
@@ -163,8 +156,9 @@ function Toggle({ label, desc, value, onChange, recommended }) {
 function SaveBanner({ message }) {
   if (!message) return null
   return (
-    <div style={{ background:'#DCFCE7', color:'#15803D', padding:'10px 16px',
-                  borderRadius:8, fontSize:13, fontWeight:600, marginBottom:16 }}>
+    <div style={{ background:'color-mix(in srgb, #16A34A 12%, transparent)', color:'#15803D',
+                  padding:'10px 16px', borderRadius:'var(--radius-control)', fontSize:13,
+                  fontWeight:600, marginBottom:16 }}>
       ✓ {message}
     </div>
   )
