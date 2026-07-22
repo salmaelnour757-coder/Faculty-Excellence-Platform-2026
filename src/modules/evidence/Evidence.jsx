@@ -19,7 +19,7 @@ import { Card, CardHeader, CardBody } from '../../shared/components/Card'
 import { Button } from '../../shared/components/Button'
 
 export default function Evidence({ institution, currentUser }) {
-  const [enrolments, setEnrolments] = useState([])
+  const [attendance, setAttendance] = useState([])
   const [certificates, setCertificates] = useState([])
   const [loading, setLoading] = useState(true)
   const [checking, setChecking] = useState(null)
@@ -32,9 +32,9 @@ export default function Evidence({ institution, currentUser }) {
   async function loadData() {
     setLoading(true)
 
-    const { data: enrolData } = await supabase
-      .from('enrolments')
-      .select('*, pathways(name), pathway_id')
+    const { data: attendanceData } = await supabase
+      .from('workshop_attendance')
+      .select('*, workshops(title, start_time, pathway_id)')
       .eq('user_id', currentUser.id)
 
     const { data: certData } = await supabase
@@ -43,26 +43,25 @@ export default function Evidence({ institution, currentUser }) {
       .eq('user_id', currentUser.id)
       .order('issued_at', { ascending: false })
 
-    setEnrolments(enrolData || [])
+    setAttendance(attendanceData || [])
     setCertificates(certData || [])
     setLoading(false)
   }
 
-  // Enrolments attendance-confirmed but not yet certified — these are the
-  // ones worth checking against Jotform.
-  const pendingCheck = enrolments.filter(e =>
-    e.attendance_confirmed &&
-    !certificates.some(c => c.workshop_id === e.workshop_id)
+  // Attendance-confirmed rows not yet certified — these are worth checking against Jotform.
+  const pendingCheck = attendance.filter(a =>
+    a.attendance_confirmed &&
+    !certificates.some(c => c.workshop_id === a.workshop_id)
   )
 
-  async function checkAndIssue(enrolment) {
-    setChecking(enrolment.id)
+  async function checkAndIssue(attendanceRecord) {
+    setChecking(attendanceRecord.id)
     setMessage('')
 
     const { data: workshop } = await supabase
       .from('workshops')
       .select('*')
-      .eq('id', enrolment.workshop_id)
+      .eq('id', attendanceRecord.workshop_id)
       .single()
 
     if (!workshop?.jotform_form_id) {
@@ -89,14 +88,14 @@ export default function Evidence({ institution, currentUser }) {
     }
 
     // Both conditions met — mark evaluation_confirmed and issue the certificate.
-    await supabase.from('enrolments')
+    await supabase.from('workshop_attendance')
       .update({ evaluation_confirmed: true, evaluation_checked_at: new Date().toISOString() })
-      .eq('id', enrolment.id)
+      .eq('id', attendanceRecord.id)
 
     const { error: certErr } = await supabase.from('certificates').insert({
       user_id: currentUser.id,
-      workshop_id: enrolment.workshop_id,
-      pathway_id: enrolment.pathway_id,
+      workshop_id: attendanceRecord.workshop_id,
+      pathway_id: workshop.pathway_id,
       institution_id: institution.id,
     })
 
@@ -155,7 +154,7 @@ export default function Evidence({ institution, currentUser }) {
               <div key={e.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                                         padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
                 <div style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 600 }}>
-                  {e.pathways?.name || 'Pathway'}
+                  {e.workshops?.title || 'Workshop'}
                 </div>
                 <Button variant="secondary" disabled={checking === e.id} onClick={() => checkAndIssue(e)} style={{ fontSize: 12, padding: '7px 14px' }}>
                   {checking === e.id ? 'Checking...' : 'Check evaluation & issue'}

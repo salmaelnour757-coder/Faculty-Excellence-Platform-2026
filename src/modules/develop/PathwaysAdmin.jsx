@@ -122,20 +122,46 @@ export default function PathwaysAdmin({ institution }) {
   }
 
   // ── Attendance marking — new, no old-repo equivalent ──────────────────
+  // Faculty enrol at the pathway level (enrolments), so to find who might
+  // attend a given workshop we start from that workshop's pathway's
+  // enrolments, then check/create their per-workshop attendance row.
   async function openAttendance(workshop) {
     setAttendanceFor(workshop)
-    const { data } = await supabase
+
+    const { data: enrolled } = await supabase
       .from('enrolments')
-      .select('id, attendance_confirmed, evaluation_confirmed, users(full_name, email)')
+      .select('user_id, users(full_name, email)')
+      .eq('pathway_id', workshop.pathway_id)
+
+    const { data: attendanceRows } = await supabase
+      .from('workshop_attendance')
+      .select('*')
       .eq('workshop_id', workshop.id)
-    setEnrolledFaculty(data || [])
+
+    const merged = (enrolled || []).map(en => {
+      const existing = (attendanceRows || []).find(a => a.user_id === en.user_id)
+      return {
+        user_id: en.user_id,
+        full_name: en.users?.full_name,
+        email: en.users?.email,
+        attendance_id: existing?.id || null,
+        attendance_confirmed: existing?.attendance_confirmed || false,
+      }
+    })
+    setEnrolledFaculty(merged)
   }
 
-  async function toggleAttendance(enrolmentId, current) {
-    await supabase.from('enrolments')
-      .update({ attendance_confirmed: !current })
-      .eq('id', enrolmentId)
-    setEnrolledFaculty(prev => prev.map(e => e.id === enrolmentId ? { ...e, attendance_confirmed: !current } : e))
+  async function toggleAttendance(row, workshopId) {
+    if (row.attendance_id) {
+      await supabase.from('workshop_attendance')
+        .update({ attendance_confirmed: !row.attendance_confirmed })
+        .eq('id', row.attendance_id)
+    } else {
+      await supabase.from('workshop_attendance')
+        .insert({ user_id: row.user_id, workshop_id: workshopId, attendance_confirmed: true })
+    }
+    // Re-fetch rather than hand-patch state, so attendance_id is correct after a first-time insert.
+    openAttendance(attendanceFor)
   }
 
   const selectedPathway = pathways.find(p => p.id === selectedId)
@@ -159,14 +185,14 @@ export default function PathwaysAdmin({ institution }) {
           <div style={{ color: 'var(--text-secondary)', fontSize: 13 }}>No one is enrolled in this workshop yet.</div>
         ) : (
           enrolledFaculty.map(e => (
-            <div key={e.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            <div key={e.user_id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                                       padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{e.users?.full_name}</div>
-                <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{e.users?.email}</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{e.full_name}</div>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{e.email}</div>
               </div>
               <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'var(--text-secondary)', cursor: 'pointer' }}>
-                <input type="checkbox" checked={!!e.attendance_confirmed} onChange={() => toggleAttendance(e.id, e.attendance_confirmed)} />
+                <input type="checkbox" checked={!!e.attendance_confirmed} onChange={() => toggleAttendance(e, attendanceFor.id)} />
                 Attended
               </label>
             </div>

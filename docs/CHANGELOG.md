@@ -24,3 +24,5 @@ Dated, one line per meaningful change. This is part of the IP evidence trail —
 - Built supabase/functions/check-evaluation edge function — Jotform API key lives server-side only, never in the Vite app's env
 - Ported PathwaysManagement.jsx into PathwaysAdmin.jsx (was never wired into the old Shell's nav) — added jotform_form_id field to the workshop form and a new attendance-marking panel (attendance confirmation didn't exist anywhere in the old app)
 - Wired Evidence and PathwaysAdmin into Shell routing
+- Discovered the new Supabase project (xmufohombjmiikwlevko) is empty — no base schema exists yet, unlike the old project. Wrote supabase/sql/00_complete_schema.sql covering the full base schema, not just Evidence's additions.
+- Corrected a modeling bug in the same pass: attendance/evaluation were placed on enrolments (pathway-level), but they're actually workshop-level events — moved to a new workshop_attendance table and patched Evidence.jsx and PathwaysAdmin.jsx to match

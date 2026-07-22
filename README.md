@@ -17,7 +17,7 @@ A configurable, institution-agnostic faculty development platform. Identifies fa
 | `src/modules/evidence/` | Built — certificate auto-issuance (attendance + Jotform evaluation check), compiled record, print/export. |
 | `src/modules/develop/PathwaysAdmin.jsx` | Ported from PathwaysManagement.jsx (never wired into the old Shell) + new: jotform_form_id field, attendance-marking panel. |
 | `src/modules/connect/`, `insight/` | Empty — not yet built. |
-| `supabase/sql/evidence_schema.sql` | Run this in the Supabase SQL editor before testing Evidence — adds the columns/table it depends on. |
+| `supabase/sql/00_complete_schema.sql` | Run this FIRST in the Supabase SQL editor — the new project is empty, this is the full base schema (institutions through certificates), not just an addition. |
 | `supabase/functions/check-evaluation/` | Deploy this edge function and set `JOTFORM_API_KEY` as a Supabase secret (not a `VITE_` var) before Evidence's evaluation check will work. |
 | `src/modules/legacy/` | AdminDashboard, FacultyDashboard, Portfolio, InviteFaculty, Settings, Auth, Onboarding, CommCentre — carried over **mechanically** (import paths fixed only, not restyled or reconceptualized). These still work, but don't reflect the new design system or module scope yet. Expect to port each of these properly in turn. |
 | `src/infrastructure/` | Empty — Configuration, Integration, Communication not yet built as their own layer. |
