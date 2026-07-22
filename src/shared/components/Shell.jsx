@@ -23,6 +23,8 @@ import AdminDashboard from '../../modules/legacy/AdminDashboard'
 import FacultyDashboard from '../../modules/legacy/FacultyDashboard'
 import Assess from '../../modules/assess/Assess'
 import Develop from '../../modules/develop/Develop'
+import Evidence from '../../modules/evidence/Evidence'
+import PathwaysAdmin from '../../modules/develop/PathwaysAdmin'
 import Portfolio from '../../modules/legacy/Portfolio'
 import InviteFaculty from '../../modules/legacy/InviteFaculty'
 import Settings from '../../modules/legacy/Settings'
@@ -48,7 +50,8 @@ export default function Shell({ currentUser, institution, onInstitutionUpdate })
     { id: 'faculty-dashboard', label: 'My dashboard' },
     { id: 'assess',            label: 'Assess' },
     { id: 'develop',           label: 'Develop' },
-    { id: 'portfolio',         label: 'Evidence (legacy)' },
+    { id: 'evidence',         label: 'Evidence' },
+    { id: 'portfolio',        label: 'Old portfolio (legacy)' },
   ]
 
   const nav = isAdmin ? adminNav : facultyNav
@@ -60,11 +63,12 @@ export default function Shell({ currentUser, institution, onInstitutionUpdate })
                              onClose={() => setScreen('admin-dashboard')}
                              onInvited={() => setScreen('admin-dashboard')} />,
     'admin-analytics':    <Placeholder title="Insight" desc="Institution/college/department heat map — not yet ported." />,
-    'admin-pathways':     <Placeholder title="Pathway management" desc="Configure faculty development programmes and sessions." />,
+    'admin-pathways':     <PathwaysAdmin institution={institution} />,
     'admin-settings':     <Settings institution={institution} currentUser={currentUser} onUpdate={onInstitutionUpdate} />,
     'faculty-dashboard':  <FacultyDashboard institution={institution} currentUser={currentUser} setScreen={setScreen} />,
     'assess':             <Assess institution={institution} currentUser={currentUser} setScreen={setScreen} />,
     'develop':            <Develop institution={institution} currentUser={currentUser} setScreen={setScreen} />,
+    'evidence':           <Evidence institution={institution} currentUser={currentUser} />,
     'portfolio':          <Portfolio institution={institution} currentUser={currentUser} />,
   }
 

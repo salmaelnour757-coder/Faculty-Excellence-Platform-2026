@@ -14,7 +14,11 @@ A configurable, institution-agnostic faculty development platform. Identifies fa
 |---|---|
 | `src/modules/assess/` | Ported and restyled onto the token system. Business logic unchanged from the old repo. |
 | `src/modules/develop/` | Ported and consolidated — merges what used to be two separate, overlapping components (IDP + FacultyPathways) into one. Restyled. **Missing:** attendance + Jotform evaluation-status check (tracked in the module spec). |
-| `src/modules/evidence/`, `connect/`, `insight/` | Empty — not yet built. |
+| `src/modules/evidence/` | Built — certificate auto-issuance (attendance + Jotform evaluation check), compiled record, print/export. |
+| `src/modules/develop/PathwaysAdmin.jsx` | Ported from PathwaysManagement.jsx (never wired into the old Shell) + new: jotform_form_id field, attendance-marking panel. |
+| `src/modules/connect/`, `insight/` | Empty — not yet built. |
+| `supabase/sql/evidence_schema.sql` | Run this in the Supabase SQL editor before testing Evidence — adds the columns/table it depends on. |
+| `supabase/functions/check-evaluation/` | Deploy this edge function and set `JOTFORM_API_KEY` as a Supabase secret (not a `VITE_` var) before Evidence's evaluation check will work. |
 | `src/modules/legacy/` | AdminDashboard, FacultyDashboard, Portfolio, InviteFaculty, Settings, Auth, Onboarding, CommCentre — carried over **mechanically** (import paths fixed only, not restyled or reconceptualized). These still work, but don't reflect the new design system or module scope yet. Expect to port each of these properly in turn. |
 | `src/infrastructure/` | Empty — Configuration, Integration, Communication not yet built as their own layer. |
 | `src/shared/theme/`, `src/shared/components/` | The actual token system and Card/Button/Pill primitives — everything ported so far uses these. |

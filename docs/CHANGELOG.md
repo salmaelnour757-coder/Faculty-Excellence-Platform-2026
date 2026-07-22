@@ -19,3 +19,8 @@ Dated, one line per meaningful change. This is part of the IP evidence trail —
 - Updated Shell.jsx routing to match new module names (assess, develop replacing assessment, idp, pathways)
 - Removed hardcoded Supabase anon-key fallback found in the old public repo's supabase.js
 - Carried over remaining components (AdminDashboard, FacultyDashboard, Portfolio, InviteFaculty, Settings, Auth, Onboarding, CommCentre) as-is under src/modules/legacy/ pending their own proper ports
+- Built Evidence module: certificate auto-issuance checking attendance_confirmed + Jotform evaluation status, compiled certificate record with print/export
+- Added attendance/evaluation schema (supabase/sql/evidence_schema.sql): workshops.jotform_form_id, enrolments.attendance_confirmed/evaluation_confirmed, new certificates table with RLS
+- Built supabase/functions/check-evaluation edge function — Jotform API key lives server-side only, never in the Vite app's env
+- Ported PathwaysManagement.jsx into PathwaysAdmin.jsx (was never wired into the old Shell's nav) — added jotform_form_id field to the workshop form and a new attendance-marking panel (attendance confirmation didn't exist anywhere in the old app)
+- Wired Evidence and PathwaysAdmin into Shell routing
