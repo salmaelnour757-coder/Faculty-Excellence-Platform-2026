@@ -372,15 +372,15 @@ function FrameworkSettings({ institution }) {
       <SettingsCard title="Competency Framework Editor"
         subtitle="Edit domain names, descriptors, and core focus areas">
         {loading ? (
-          <div style={{ color:'#64748B' }}>Loading domains...</div>
+          <div style={{ color:'var(--text-secondary)' }}>Loading domains...</div>
         ) : domains.map(d => (
           <div key={d.id} style={{ marginBottom:10 }}>
             {editing === d.id ? (
-              <div style={{ padding:16, borderRadius:10,
-                            border:'2px solid #0D2B5E', background:'#EEF2FF' }}>
+              <div style={{ padding:16, borderRadius:'var(--radius-control)',
+                            border:'2px solid var(--brand-primary)', background:'var(--pill-bg)' }}>
                 <div style={{ display:'grid', gridTemplateColumns:'auto 1fr', gap:12,
                               alignItems:'start', marginBottom:12 }}>
-                  <div style={{ background:'#0D2B5E', color:'white', borderRadius:8,
+                  <div style={{ background:'var(--brand-primary)', color:'white', borderRadius:'var(--radius-control)',
                                 padding:'4px 12px', fontWeight:800, fontSize:13,
                                 alignSelf:'center' }}>
                     D{d.domain_number}
@@ -403,43 +403,35 @@ function FrameworkSettings({ institution }) {
                     placeholder="Key areas e.g. Pedagogy · Active Learning" />
                 </Field>
                 <div style={{ display:'flex', gap:8 }}>
-                  <button onClick={() => saveDomain(d)} disabled={saving}
-                    style={{ padding:'8px 20px', borderRadius:8, border:'none',
-                             background:'#0D2B5E', color:'white',
-                             fontWeight:700, fontSize:13, cursor:'pointer' }}>
+                  <Button onClick={() => saveDomain(d)} disabled={saving} style={{ padding:'8px 20px', fontSize:13 }}>
                     {saving ? 'Saving...' : '💾 Save'}
-                  </button>
-                  <button onClick={() => { setEditing(null); loadDomains() }}
-                    style={{ padding:'8px 20px', borderRadius:8,
-                             border:'1.5px solid #DDE3EF', background:'white',
-                             color:'#64748B', fontWeight:600, fontSize:13, cursor:'pointer' }}>
+                  </Button>
+                  <Button variant="ghost" onClick={() => { setEditing(null); loadDomains() }}
+                    style={{ padding:'8px 20px', fontSize:13 }}>
                     Cancel
-                  </button>
+                  </Button>
                 </div>
               </div>
             ) : (
               <div style={{ display:'flex', alignItems:'center', gap:12,
-                            padding:'12px 16px', borderRadius:10,
-                            border:'1px solid #DDE3EF', background:'white' }}>
-                <span style={{ background:'#1A7B8C', color:'white', borderRadius:8,
+                            padding:'12px 16px', borderRadius:'var(--radius-control)',
+                            border:'1px solid var(--border)', background:'var(--surface-card)' }}>
+                <span style={{ background:'var(--brand-accent)', color:'white', borderRadius:'var(--radius-control)',
                                padding:'4px 12px', fontWeight:800, fontSize:13,
                                flexShrink:0 }}>
                   D{d.domain_number}
                 </span>
                 <div style={{ flex:1 }}>
-                  <div style={{ fontWeight:700, color:'#0D2B5E', fontSize:14 }}>
+                  <div style={{ fontWeight:700, color:'var(--text-primary)', fontSize:14 }}>
                     {d.name}
                   </div>
-                  <div style={{ fontSize:12, color:'#64748B', marginTop:2 }}>
+                  <div style={{ fontSize:12, color:'var(--text-secondary)', marginTop:2 }}>
                     {d.core_focus}
                   </div>
                 </div>
-                <button onClick={() => setEditing(d.id)}
-                  style={{ padding:'6px 14px', borderRadius:8,
-                           border:'1.5px solid #DDE3EF', background:'white',
-                           color:'#0D2B5E', fontWeight:600, fontSize:12, cursor:'pointer' }}>
+                <Button variant="ghost" onClick={() => setEditing(d.id)} style={{ padding:'6px 14px', fontSize:12 }}>
                   ✏️ Edit
-                </button>
+                </Button>
               </div>
             )}
           </div>
@@ -492,7 +484,7 @@ function InstrumentSettings({ institution }) {
       <SettingsCard title="Instrument Editor"
         subtitle="Edit assessment item wording. Click a domain to expand its items.">
         {loading ? (
-          <div style={{ color:'#64748B' }}>Loading...</div>
+          <div style={{ color:'var(--text-secondary)' }}>Loading...</div>
         ) : domains.map(d => {
           const domainItems = items.filter(i => i.domain_id === d.id)
           const isOpen = openDomain === d.id
@@ -501,40 +493,40 @@ function InstrumentSettings({ institution }) {
               <button onClick={() => setOpenDomain(isOpen ? null : d.id)}
                 style={{
                   width:'100%', display:'flex', alignItems:'center', gap:12,
-                  padding:'12px 16px', borderRadius:isOpen ? '10px 10px 0 0' : 10,
-                  border:'1px solid #DDE3EF',
-                  background: isOpen ? '#0D2B5E' : 'white',
+                  padding:'12px 16px', borderRadius: isOpen ? 'var(--radius-control) var(--radius-control) 0 0' : 'var(--radius-control)',
+                  border:'1px solid var(--border)',
+                  background: isOpen ? 'var(--brand-primary)' : 'var(--surface-card)',
                   cursor:'pointer', textAlign:'left'
                 }}>
-                <span style={{ background: isOpen ? '#1A7B8C' : '#EEF2FF',
-                               color: isOpen ? 'white' : '#0D2B5E',
-                               borderRadius:8, padding:'3px 10px',
+                <span style={{ background: isOpen ? 'var(--brand-accent)' : 'var(--pill-bg)',
+                               color: isOpen ? 'white' : 'var(--text-primary)',
+                               borderRadius:'var(--radius-control)', padding:'3px 10px',
                                fontWeight:800, fontSize:13, flexShrink:0 }}>
                   D{d.domain_number}
                 </span>
                 <span style={{ flex:1, fontWeight:700, fontSize:14,
-                               color: isOpen ? 'white' : '#0D2B5E' }}>
+                               color: isOpen ? 'white' : 'var(--text-primary)' }}>
                   {d.name}
                 </span>
-                <span style={{ color: isOpen ? 'rgba(255,255,255,.6)' : '#64748B',
+                <span style={{ color: isOpen ? 'rgba(255,255,255,.6)' : 'var(--text-secondary)',
                                fontSize:12 }}>
                   {domainItems.length} items {isOpen ? '▲' : '▼'}
                 </span>
               </button>
 
               {isOpen && (
-                <div style={{ border:'1px solid #DDE3EF', borderTop:'none',
-                              borderRadius:'0 0 10px 10px', overflow:'hidden' }}>
+                <div style={{ border:'1px solid var(--border)', borderTop:'none',
+                              borderRadius:'0 0 var(--radius-control) var(--radius-control)', overflow:'hidden' }}>
                   {domainItems.map((item, idx) => (
                     <div key={item.id} style={{
                       padding:'12px 16px',
-                      borderBottom: idx < domainItems.length-1 ? '1px solid #F1F5F9' : 'none',
-                      background:'white'
+                      borderBottom: idx < domainItems.length-1 ? '1px solid var(--border)' : 'none',
+                      background:'var(--surface-card)'
                     }}>
                       {editing === item.id ? (
                         <div>
                           <div style={{ display:'flex', gap:8, alignItems:'flex-start' }}>
-                            <span style={{ background:'#EEF2FF', color:'#0D2B5E',
+                            <span style={{ background:'var(--pill-bg)', color:'var(--text-primary)',
                                            borderRadius:6, padding:'3px 8px',
                                            fontWeight:700, fontSize:12, flexShrink:0,
                                            marginTop:10 }}>
@@ -545,44 +537,34 @@ function InstrumentSettings({ institution }) {
                               onChange={e => setItems(is => is.map(x =>
                                 x.id === item.id ? { ...x, item_text:e.target.value } : x))}
                               rows={3}
-                              style={{ flex:1, padding:'8px 12px', borderRadius:8,
-                                       border:'1px solid #DDE3EF', fontSize:13,
-                                       outline:'none', resize:'vertical', boxSizing:'border-box' }}
+                              style={{ flex:1, padding:'8px 12px', borderRadius:'var(--radius-control)',
+                                       border:'1px solid var(--border)', fontSize:13,
+                                       outline:'none', resize:'vertical', boxSizing:'border-box',
+                                       background:'var(--surface-card)', color:'var(--text-primary)' }}
                             />
                           </div>
                           <div style={{ display:'flex', gap:8, marginTop:8, marginLeft:36 }}>
-                            <button onClick={() => saveItem(item)} disabled={saving}
-                              style={{ padding:'6px 16px', borderRadius:8, border:'none',
-                                       background:'#0D2B5E', color:'white',
-                                       fontWeight:700, fontSize:12, cursor:'pointer' }}>
+                            <Button onClick={() => saveItem(item)} disabled={saving} style={{ padding:'6px 16px', fontSize:12 }}>
                               {saving ? 'Saving...' : '💾 Save'}
-                            </button>
-                            <button onClick={() => { setEditing(null); loadData() }}
-                              style={{ padding:'6px 16px', borderRadius:8,
-                                       border:'1.5px solid #DDE3EF', background:'white',
-                                       color:'#64748B', fontWeight:600,
-                                       fontSize:12, cursor:'pointer' }}>
+                            </Button>
+                            <Button variant="ghost" onClick={() => { setEditing(null); loadData() }} style={{ padding:'6px 16px', fontSize:12 }}>
                               Cancel
-                            </button>
+                            </Button>
                           </div>
                         </div>
                       ) : (
                         <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-                          <span style={{ background:'#F2F5FA', color:'#64748B',
+                          <span style={{ background:'var(--surface-page)', color:'var(--text-secondary)',
                                          borderRadius:6, padding:'2px 8px',
                                          fontWeight:700, fontSize:12, flexShrink:0 }}>
                             {idx+1}
                           </span>
-                          <span style={{ flex:1, fontSize:13, color:'#0D2B5E' }}>
+                          <span style={{ flex:1, fontSize:13, color:'var(--text-primary)' }}>
                             {item.item_text}
                           </span>
-                          <button onClick={() => setEditing(item.id)}
-                            style={{ padding:'5px 12px', borderRadius:8,
-                                     border:'1.5px solid #DDE3EF', background:'white',
-                                     color:'#0D2B5E', fontWeight:600,
-                                     fontSize:12, cursor:'pointer', flexShrink:0 }}>
+                          <Button variant="ghost" onClick={() => setEditing(item.id)} style={{ padding:'5px 12px', fontSize:12, flexShrink:0 }}>
                             ✏️ Edit
-                          </button>
+                          </Button>
                         </div>
                       )}
                     </div>
