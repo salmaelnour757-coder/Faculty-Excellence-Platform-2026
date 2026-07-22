@@ -662,17 +662,15 @@ function PathwaysSettings({ institution }) {
       <SettingsCard title="Pathways Manager"
         subtitle="Configure your faculty development learning pathways">
 
-        <button onClick={() => setNewPathway(!newPathway)}
-          style={{ marginBottom:16, padding:'9px 20px', borderRadius:8, border:'none',
-                   background: newPathway ? '#64748B' : '#0D2B5E',
-                   color:'white', fontWeight:700, fontSize:13, cursor:'pointer' }}>
+        <Button variant={newPathway ? 'secondary' : 'primary'}
+          onClick={() => setNewPathway(!newPathway)} style={{ marginBottom:16, padding:'9px 20px', fontSize:13 }}>
           {newPathway ? 'Cancel' : '+ Add New Pathway'}
-        </button>
+        </Button>
 
         {newPathway && (
-          <div style={{ padding:16, borderRadius:10, border:'2px solid #1A7B8C',
-                        background:'#EDF6F8', marginBottom:16 }}>
-            <div style={{ fontSize:14, fontWeight:700, color:'#0D2B5E', marginBottom:14 }}>
+          <div style={{ padding:16, borderRadius:'var(--radius-control)', border:'2px solid var(--brand-accent)',
+                        background:'color-mix(in srgb, var(--brand-accent) 8%, var(--surface-card))', marginBottom:16 }}>
+            <div style={{ fontSize:14, fontWeight:700, color:'var(--text-primary)', marginBottom:14 }}>
               New Pathway
             </div>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
@@ -700,27 +698,24 @@ function PathwaysSettings({ institution }) {
               </div>
             </div>
             <label style={{ display:'flex', alignItems:'center', gap:6,
-                            fontSize:13, color:'#0D2B5E', cursor:'pointer', marginBottom:14 }}>
+                            fontSize:13, color:'var(--text-primary)', cursor:'pointer', marginBottom:14 }}>
               <input type="checkbox" checked={newForm.requires_approval}
                 onChange={e => setNewForm(f=>({...f,requires_approval:e.target.checked}))} />
               Requires approval to enrol
             </label>
-            <button onClick={addPathway} disabled={saving}
-              style={{ padding:'9px 22px', borderRadius:8, border:'none',
-                       background:'#0D2B5E', color:'white',
-                       fontWeight:700, fontSize:13, cursor:'pointer' }}>
+            <Button onClick={addPathway} disabled={saving} style={{ padding:'9px 22px', fontSize:13 }}>
               {saving ? 'Adding...' : '+ Add Pathway'}
-            </button>
+            </Button>
           </div>
         )}
 
         {loading ? (
-          <div style={{ color:'#64748B' }}>Loading pathways...</div>
+          <div style={{ color:'var(--text-secondary)' }}>Loading pathways...</div>
         ) : pathways.map(p => (
           <div key={p.id} style={{ marginBottom:10 }}>
             {editing === p.id ? (
-              <div style={{ padding:16, borderRadius:10,
-                            border:'2px solid #0D2B5E', background:'#EEF2FF' }}>
+              <div style={{ padding:16, borderRadius:'var(--radius-control)',
+                            border:'2px solid var(--brand-primary)', background:'var(--pill-bg)' }}>
                 <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
                   <div style={{ gridColumn:'1/-1' }}>
                     <Field label="Pathway Name">
@@ -755,27 +750,21 @@ function PathwaysSettings({ institution }) {
                   </div>
                 </div>
                 <div style={{ display:'flex', gap:8, alignItems:'center', flexWrap:'wrap' }}>
-                  <button onClick={() => savePathway(p)} disabled={saving}
-                    style={{ padding:'8px 20px', borderRadius:8, border:'none',
-                             background:'#0D2B5E', color:'white',
-                             fontWeight:700, fontSize:13, cursor:'pointer' }}>
+                  <Button onClick={() => savePathway(p)} disabled={saving} style={{ padding:'8px 20px', fontSize:13 }}>
                     {saving ? 'Saving...' : '💾 Save'}
-                  </button>
-                  <button onClick={() => { setEditing(null); loadPathways() }}
-                    style={{ padding:'8px 20px', borderRadius:8,
-                             border:'1.5px solid #DDE3EF', background:'white',
-                             color:'#64748B', fontWeight:600, fontSize:13, cursor:'pointer' }}>
+                  </Button>
+                  <Button variant="ghost" onClick={() => { setEditing(null); loadPathways() }} style={{ padding:'8px 20px', fontSize:13 }}>
                     Cancel
-                  </button>
+                  </Button>
                   <label style={{ display:'flex', alignItems:'center', gap:6,
-                                  fontSize:13, color:'#0D2B5E', cursor:'pointer' }}>
+                                  fontSize:13, color:'var(--text-primary)', cursor:'pointer' }}>
                     <input type="checkbox" checked={p.is_flagship}
                       onChange={e => setPathways(ps => ps.map(x =>
                         x.id === p.id ? {...x, is_flagship:e.target.checked} : x))} />
                     Flagship pathway
                   </label>
                   <label style={{ display:'flex', alignItems:'center', gap:6,
-                                  fontSize:13, color:'#0D2B5E', cursor:'pointer',
+                                  fontSize:13, color:'var(--text-primary)', cursor:'pointer',
                                   marginLeft:'auto' }}>
                     <input type="checkbox" checked={p.requires_approval}
                       onChange={e => setPathways(ps => ps.map(x =>
@@ -786,35 +775,28 @@ function PathwaysSettings({ institution }) {
               </div>
             ) : (
               <div style={{ display:'flex', alignItems:'center', gap:12,
-                            padding:'12px 16px', borderRadius:10,
-                            border:'1px solid #DDE3EF', background:'white' }}>
+                            padding:'12px 16px', borderRadius:'var(--radius-control)',
+                            border:'1px solid var(--border)', background:'var(--surface-card)' }}>
                 <span style={{ fontSize:20 }}>{icons[p.code] || '🎓'}</span>
                 <div style={{ flex:1 }}>
-                  <div style={{ fontWeight:700, color:'#0D2B5E', fontSize:14,
+                  <div style={{ fontWeight:700, color:'var(--text-primary)', fontSize:14,
                                 display:'flex', alignItems:'center', gap:8, flexWrap:'wrap' }}>
                     {p.name}
                     {p.is_flagship && (
-                      <span style={{ background:'#C9982A', color:'#0D2B5E',
-                                     fontSize:11, padding:'2px 8px',
-                                     borderRadius:8, fontWeight:700 }}>⭐ Flagship</span>
+                      <Pill style={{ background:'#C9982A', color:'#0D2B5E', fontSize:11 }}>⭐ Flagship</Pill>
                     )}
                     {p.requires_approval && (
-                      <span style={{ background:'#FEF9C3', color:'#92400E',
-                                     fontSize:11, padding:'2px 8px',
-                                     borderRadius:8, fontWeight:700 }}>🔒 Approval required</span>
+                      <Pill style={{ background:'#FEF9C3', color:'#92400E', fontSize:11 }}>🔒 Approval required</Pill>
                     )}
                   </div>
-                  <div style={{ fontSize:12, color:'#64748B', marginTop:2 }}>
+                  <div style={{ fontSize:12, color:'var(--text-secondary)', marginTop:2 }}>
                     {p.cpd_credits} CPD credits · {p.duration_hours} hours
                     {p.certificate_title ? ` · ${p.certificate_title}` : ''}
                   </div>
                 </div>
-                <button onClick={() => setEditing(p.id)}
-                  style={{ padding:'6px 14px', borderRadius:8,
-                           border:'1.5px solid #DDE3EF', background:'white',
-                           color:'#0D2B5E', fontWeight:600, fontSize:12, cursor:'pointer' }}>
+                <Button variant="ghost" onClick={() => setEditing(p.id)} style={{ padding:'6px 14px', fontSize:12 }}>
                   ✏️ Edit
-                </button>
+                </Button>
               </div>
             )}
           </div>
