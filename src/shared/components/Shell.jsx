@@ -61,8 +61,10 @@ export default function Shell({ currentUser, institution, onInstitutionUpdate })
 
   const nav = isAdmin ? adminNav : facultyNav
 
+  const branding = institution?.branding || { primary: '#0D2B5E', accent: '#1A7B8C', gold: '#C9982A' }
+
   const screenMap = {
-    'admin-dashboard':   <AdminDashboard institution={institution} currentUser={currentUser} />,
+    'admin-dashboard':   <AdminDashboard institution={institution} currentUser={currentUser} branding={branding} />,
     'admin-faculty':      <Placeholder title="Faculty management" desc="Manage all faculty accounts, roles, and profiles." />,
     'admin-invite':       <InviteFaculty institution={institution} currentUser={currentUser}
                              onClose={() => setScreen('admin-dashboard')}
@@ -71,7 +73,7 @@ export default function Shell({ currentUser, institution, onInstitutionUpdate })
     'admin-org':          <OrgHierarchyAdmin institution={institution} />,
     'admin-pathways':     <PathwaysAdmin institution={institution} />,
     'admin-settings':     <Settings institution={institution} currentUser={currentUser} onUpdate={onInstitutionUpdate} />,
-    'faculty-dashboard':  <FacultyDashboard institution={institution} currentUser={currentUser} setScreen={setScreen} />,
+    'faculty-dashboard':  <FacultyDashboard institution={institution} currentUser={currentUser} branding={branding} setScreen={setScreen} />,
     'assess':             <Assess institution={institution} currentUser={currentUser} setScreen={setScreen} />,
     'develop':            <Develop institution={institution} currentUser={currentUser} setScreen={setScreen} />,
     'evidence':           <Evidence institution={institution} currentUser={currentUser} />,
