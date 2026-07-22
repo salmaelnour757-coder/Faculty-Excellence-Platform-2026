@@ -265,14 +265,7 @@ function InstitutionSettings({ institution, onUpdate }) {
             {accredBodies.map(b => {
               const sel = form.accreditation_bodies.includes(b)
               return (
-                <button key={b} onClick={() => toggleAccred(b)}
-                  style={{
-                    padding:'6px 14px', borderRadius:20, border:'none',
-                    cursor:'pointer', fontSize:13, fontWeight: sel ? 700 : 400,
-                    background: sel ? '#1A7B8C' : '#F2F5FA',
-                    color: sel ? 'white' : '#64748B',
-                    transition:'all .15s'
-                  }}>{b}</button>
+                <Pill key={b} active={sel} onClick={() => toggleAccred(b)}>{b}</Pill>
               )
             })}
           </div>
@@ -290,11 +283,11 @@ function InstitutionSettings({ institution, onUpdate }) {
             <div key={key} style={{ display:'flex', alignItems:'center', gap:12 }}>
               <input type="color" value={form.branding[key]}
                 onChange={e => setBranding(key, e.target.value)}
-                style={{ width:48, height:48, borderRadius:10,
-                         border:'1px solid #DDE3EF', cursor:'pointer', padding:3 }} />
+                style={{ width:48, height:48, borderRadius:'var(--radius-control)',
+                         border:'1px solid var(--border)', cursor:'pointer', padding:3 }} />
               <div>
-                <div style={{ fontSize:12, color:'#64748B' }}>{label}</div>
-                <div style={{ fontSize:13, fontWeight:700, color:'#0D2B5E' }}>
+                <div style={{ fontSize:12, color:'var(--text-secondary)' }}>{label}</div>
+                <div style={{ fontSize:13, fontWeight:700, color:'var(--text-primary)' }}>
                   {form.branding[key]}
                 </div>
               </div>
@@ -302,7 +295,10 @@ function InstitutionSettings({ institution, onUpdate }) {
           ))}
         </div>
 
-        <div style={{ borderRadius:10, overflow:'hidden', border:'1px solid #DDE3EF' }}>
+        {/* Live preview of the institution's own branding colours — intentionally
+            independent of the platform's own --brand-* tokens, since this previews
+            what the admin is picking, not the app's current theme. */}
+        <div style={{ borderRadius:'var(--radius-control)', overflow:'hidden', border:'1px solid var(--border)' }}>
           <div style={{ background:form.branding.primary, padding:'16px 20px' }}>
             <div style={{ color:form.branding.gold, fontWeight:800, fontSize:16 }}>
               {form.name || 'Your Institution'}
@@ -321,13 +317,10 @@ function InstitutionSettings({ institution, onUpdate }) {
           </div>
         </div>
 
-        <div style={{ marginTop:16, paddingTop:16, borderTop:'1px solid #F1F5F9' }}>
-          <button onClick={save} disabled={saving}
-            style={{ padding:'10px 24px', borderRadius:8, border:'none',
-                     background: saving ? '#94A3B8' : '#0D2B5E',
-                     color:'white', fontWeight:700, fontSize:13, cursor:'pointer' }}>
+        <div style={{ marginTop:16, paddingTop:16, borderTop:'1px solid var(--border)' }}>
+          <Button onClick={save} disabled={saving}>
             {saving ? 'Saving...' : '💾 Save Changes'}
-          </button>
+          </Button>
         </div>
       </SettingsCard>
     </div>
