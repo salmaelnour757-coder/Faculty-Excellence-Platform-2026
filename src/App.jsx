@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './shared/lib/supabase'
 import { useTheme } from './shared/theme/useTheme'
+import { useBrandColors } from './shared/theme/useBrandColors'
 import Auth from './shared/components/Auth'
 import Shell from './shared/components/Shell'
 import Onboarding from './shared/components/Onboarding'
@@ -11,6 +12,7 @@ export default function App() {
   const [institution, setInstitution]   = useState(null)
   const [currentUser, setCurrentUser]   = useState(null)
   const [theme, toggleTheme]            = useTheme()
+  useBrandColors(institution?.branding)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {

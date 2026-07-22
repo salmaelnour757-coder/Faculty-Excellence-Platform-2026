@@ -8,8 +8,11 @@
 //    never wired in the fuller FacultyPathways.jsx at all).
 //
 // 2. Colors: sidebar/topbar now read from --brand-primary/--brand-accent/
-//    --brand-secondary tokens instead of the old `branding` prop object, so
-//    the whole chrome recolors when an institution changes its theme.
+//    --brand-secondary tokens instead of the old `branding` prop object.
+//    Those vars are kept in sync with the logged-in institution's saved
+//    branding by App.jsx's useBrandColors() — Shell no longer needs to
+//    thread a branding prop down to children at all; AdminDashboard and
+//    FacultyDashboard read the same live tokens directly.
 //
 // 3. 'admin-comms' now wires in CommCentre.jsx (compose/send from the
 //    template library editable in Settings > Communication) — it existed
@@ -68,10 +71,8 @@ export default function Shell({ currentUser, institution, onInstitutionUpdate, t
 
   const nav = isAdmin ? adminNav : facultyNav
 
-  const branding = institution?.branding || { primary: '#0D2B5E', accent: '#1A7B8C', gold: '#C9982A' }
-
   const screenMap = {
-    'admin-dashboard':   <AdminDashboard institution={institution} currentUser={currentUser} branding={branding} />,
+    'admin-dashboard':   <AdminDashboard institution={institution} currentUser={currentUser} />,
     'admin-faculty':      <Placeholder title="Faculty management" desc="Manage all faculty accounts, roles, and profiles." />,
     'admin-invite':       <InviteFaculty institution={institution} currentUser={currentUser}
                              onClose={() => setScreen('admin-dashboard')}
@@ -81,7 +82,7 @@ export default function Shell({ currentUser, institution, onInstitutionUpdate, t
     'admin-pathways':     <PathwaysAdmin institution={institution} />,
     'admin-comms':        <CommCentre institution={institution} currentUser={currentUser} />,
     'admin-settings':     <Settings institution={institution} currentUser={currentUser} onUpdate={onInstitutionUpdate} />,
-    'faculty-dashboard':  <FacultyDashboard institution={institution} currentUser={currentUser} branding={branding} setScreen={setScreen} />,
+    'faculty-dashboard':  <FacultyDashboard institution={institution} currentUser={currentUser} setScreen={setScreen} />,
     'assess':             <Assess institution={institution} currentUser={currentUser} setScreen={setScreen} />,
     'develop':            <Develop institution={institution} currentUser={currentUser} setScreen={setScreen} />,
     'evidence':           <Evidence institution={institution} currentUser={currentUser} />,

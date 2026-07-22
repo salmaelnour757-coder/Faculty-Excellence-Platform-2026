@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../shared/lib/supabase'
+import { Card, CardHeader, CardBody } from '../../shared/components/Card'
+import { Button } from '../../shared/components/Button'
 
-export default function AdminDashboard({ institution, currentUser, branding }) {
+export default function AdminDashboard({ institution, currentUser }) {
   const [stats, setStats]   = useState({ faculty:0, assessed:0, idps:0, enrolments:0 })
   const [domains, setDomains] = useState([])
   const [loading, setLoading] = useState(true)
@@ -45,109 +47,95 @@ export default function AdminDashboard({ institution, currentUser, branding }) {
 
   const card = (label, value, sub, accent) => (
     <div style={{
-      background:'white', borderRadius:10, padding:'18px 20px',
-      border:'1px solid #DDE3EF', borderLeft:`4px solid ${accent}`,
-      boxShadow:'0 2px 12px rgba(13,43,94,.06)'
+      background:'var(--surface-card)', borderRadius:'var(--radius-control)', padding:'18px 20px',
+      border:'1px solid var(--border)', borderLeft:`4px solid ${accent}`,
+      boxShadow:'0 1px 2px rgba(var(--shadow-color),0.04), 0 6px 16px rgba(var(--shadow-color),0.06)'
     }}>
-      <div style={{ fontSize:11, fontWeight:700, color:'#64748B',
+      <div style={{ fontSize:11, fontWeight:700, color:'var(--text-secondary)',
                     textTransform:'uppercase', letterSpacing:.4, marginBottom:6 }}>
         {label}
       </div>
-      <div style={{ fontSize:28, fontWeight:800, color:'#0D2B5E', lineHeight:1 }}>
+      <div style={{ fontSize:28, fontWeight:800, color:'var(--text-primary)', lineHeight:1 }}>
         {loading ? '—' : value}
       </div>
-      <div style={{ fontSize:12, color:'#64748B', marginTop:4 }}>{sub}</div>
+      <div style={{ fontSize:12, color:'var(--text-secondary)', marginTop:4 }}>{sub}</div>
     </div>
   )
 
   return (
     <div>
-      {/* Welcome */}
-      <div style={{
-        background: branding.primary, borderRadius:12, padding:'20px 24px',
-        marginBottom:20, color:'white'
-      }}>
-        <div style={{ fontSize:18, fontWeight:800, color:branding.gold }}>
-          Welcome back, {currentUser?.full_name?.split(' ')[0] || 'Admin'} 👋
-        </div>
-        <div style={{ fontSize:13, color:'rgba(255,255,255,.7)', marginTop:4 }}>
-          {institution?.name} · Faculty Excellence Platform
-        </div>
-      </div>
+      {/* Welcome — the gloss card header, one of the two permitted gloss surfaces */}
+      <Card hoverable={false} style={{ marginBottom:20 }}>
+        <CardHeader
+          eyebrow={institution?.name}
+          title={`Welcome back, ${currentUser?.full_name?.split(' ')[0] || 'Admin'} 👋`}
+          sub="Faculty Excellence Platform"
+        />
+      </Card>
 
       {/* Stats */}
       <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))',
                     gap:14, marginBottom:20 }}>
-        {card('Total Faculty',    stats.faculty,    'Registered users',         '#0D2B5E')}
-        {card('Assessments',      stats.assessed,   'Completed this cycle',      '#1A7B8C')}
-        {card('Active IDPs',      stats.idps,       'In progress',               '#C9982A')}
-        {card('Enrolments',       stats.enrolments, 'Across all pathways',        '#22C55E')}
+        {card('Total Faculty',    stats.faculty,    'Registered users',    'var(--brand-primary)')}
+        {card('Assessments',      stats.assessed,   'Completed this cycle', 'var(--brand-accent)')}
+        {card('Active IDPs',      stats.idps,       'In progress',          'var(--brand-secondary)')}
+        {card('Enrolments',       stats.enrolments, 'Across all pathways',  '#22C55E')}
       </div>
 
       {/* Domains */}
-      <div style={{ background:'white', borderRadius:10, border:'1px solid #DDE3EF',
-                    boxShadow:'0 2px 12px rgba(13,43,94,.06)', marginBottom:20 }}>
-        <div style={{ padding:'16px 20px', borderBottom:'1px solid #DDE3EF',
+      <Card hoverable={false} style={{ marginBottom:20 }}>
+        <div style={{ padding:'16px 20px', borderBottom:'1px solid var(--border)',
                       display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-          <div style={{ fontSize:15, fontWeight:700, color:'#0D2B5E' }}>
+          <div style={{ fontSize:15, fontWeight:700, color:'var(--text-primary)' }}>
             Competency Framework
           </div>
-          <span style={{ fontSize:12, color:'#64748B' }}>
+          <span style={{ fontSize:12, color:'var(--text-secondary)' }}>
             {domains.length} domains configured
           </span>
         </div>
-        <div style={{ padding:'16px 20px' }}>
+        <CardBody>
           {loading ? (
-            <div style={{ color:'#64748B', fontSize:13 }}>Loading domains...</div>
+            <div style={{ color:'var(--text-secondary)', fontSize:13 }}>Loading domains...</div>
           ) : domains.length === 0 ? (
-            <div style={{ color:'#64748B', fontSize:13 }}>No domains found.</div>
+            <div style={{ color:'var(--text-secondary)', fontSize:13 }}>No domains found.</div>
           ) : (
             <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))', gap:10 }}>
               {domains.map(d => (
                 <div key={d.id} style={{
-                  padding:'10px 14px', borderRadius:8,
-                  border:'1px solid #DDE3EF', background:'#F2F5FA',
+                  padding:'10px 14px', borderRadius:'var(--radius-control)',
+                  border:'1px solid var(--border)', background:'var(--surface-page)',
                   display:'flex', gap:10, alignItems:'center'
                 }}>
                   <span style={{
-                    background: branding.accent, color:'white',
+                    background: 'var(--brand-accent)', color:'white',
                     borderRadius:'50%', width:26, height:26,
                     display:'flex', alignItems:'center', justifyContent:'center',
                     fontSize:11, fontWeight:700, flexShrink:0
                   }}>{d.domain_number}</span>
-                  <span style={{ fontSize:12.5, color:'#0D2B5E', fontWeight:500 }}>
+                  <span style={{ fontSize:12.5, color:'var(--text-primary)', fontWeight:500 }}>
                     {d.name}
                   </span>
                 </div>
               ))}
             </div>
           )}
-        </div>
-      </div>
+        </CardBody>
+      </Card>
 
       {/* Quick actions */}
-      <div style={{ background:'white', borderRadius:10, border:'1px solid #DDE3EF',
-                    padding:'16px 20px', boxShadow:'0 2px 12px rgba(13,43,94,.06)' }}>
-        <div style={{ fontSize:15, fontWeight:700, color:'#0D2B5E', marginBottom:16 }}>
-          Quick Actions
-        </div>
-        <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
-          {[
-            { label:'+ Add Faculty',       color:'#0D2B5E' },
-            { label:'📋 Launch Assessment', color:'#1A7B8C' },
-            { label:'📊 View Analytics',    color:'#C9982A', textColor:'#0D2B5E' },
-            { label:'⚙️ Settings',          color:'#F2F5FA', textColor:'#0D2B5E', border:true },
-          ].map(a => (
-            <button key={a.label} style={{
-              padding:'10px 20px', borderRadius:8, fontWeight:700,
-              fontSize:13, cursor:'pointer',
-              background: a.color,
-              color: a.textColor || 'white',
-              border: a.border ? '1.5px solid #DDE3EF' : 'none'
-            }}>{a.label}</button>
-          ))}
-        </div>
-      </div>
+      <Card hoverable={false}>
+        <CardBody>
+          <div style={{ fontSize:15, fontWeight:700, color:'var(--text-primary)', marginBottom:16 }}>
+            Quick Actions
+          </div>
+          <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
+            <Button style={{ padding:'10px 20px', fontSize:13 }}>+ Add Faculty</Button>
+            <Button style={{ padding:'10px 20px', fontSize:13 }}>📋 Launch Assessment</Button>
+            <Button variant="secondary" style={{ padding:'10px 20px', fontSize:13 }}>📊 View Analytics</Button>
+            <Button variant="ghost" style={{ padding:'10px 20px', fontSize:13 }}>⚙️ Settings</Button>
+          </div>
+        </CardBody>
+      </Card>
     </div>
   )
 }
