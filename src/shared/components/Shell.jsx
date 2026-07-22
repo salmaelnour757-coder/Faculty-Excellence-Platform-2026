@@ -72,7 +72,7 @@ export default function Shell({ currentUser, institution, onInstitutionUpdate, t
   const nav = isAdmin ? adminNav : facultyNav
 
   const screenMap = {
-    'admin-dashboard':   <AdminDashboard institution={institution} currentUser={currentUser} />,
+    'admin-dashboard':   <AdminDashboard institution={institution} currentUser={currentUser} setScreen={setScreen} />,
     'admin-faculty':      <Placeholder title="Faculty management" desc="Manage all faculty accounts, roles, and profiles." />,
     'admin-invite':       <InviteFaculty institution={institution} currentUser={currentUser}
                              onClose={() => setScreen('admin-dashboard')}
@@ -193,14 +193,6 @@ export default function Shell({ currentUser, institution, onInstitutionUpdate, t
             </div>
           </div>
 
-          {isAdmin && screen !== 'admin-invite' && (
-            <button onClick={() => setScreen('admin-invite')}
-              style={{ padding: '8px 16px', borderRadius: 'var(--radius-control)', border: 'none',
-                       background: 'var(--brand-primary)', color: 'white', fontWeight: 600,
-                       fontSize: 13, cursor: 'pointer' }}>
-              Invite faculty
-            </button>
-          )}
 
           <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
             {new Date().toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}

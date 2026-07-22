@@ -3,7 +3,7 @@ import { supabase } from '../../shared/lib/supabase'
 import { Card, CardHeader, CardBody } from '../../shared/components/Card'
 import { Button } from '../../shared/components/Button'
 
-export default function AdminDashboard({ institution, currentUser }) {
+export default function AdminDashboard({ institution, currentUser, setScreen }) {
   const [stats, setStats]   = useState({ faculty:0, assessed:0, idps:0, enrolments:0 })
   const [domains, setDomains] = useState([])
   const [loading, setLoading] = useState(true)
@@ -129,10 +129,9 @@ export default function AdminDashboard({ institution, currentUser }) {
             Quick Actions
           </div>
           <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
-            <Button style={{ padding:'10px 20px', fontSize:13 }}>+ Add Faculty</Button>
-            <Button style={{ padding:'10px 20px', fontSize:13 }}>📋 Launch Assessment</Button>
-            <Button variant="secondary" style={{ padding:'10px 20px', fontSize:13 }}>📊 View Analytics</Button>
-            <Button variant="ghost" style={{ padding:'10px 20px', fontSize:13 }}>⚙️ Settings</Button>
+            <Button onClick={() => setScreen?.('admin-invite')} style={{ padding:'10px 20px', fontSize:13 }}>+ Add Faculty</Button>
+            <Button variant="secondary" onClick={() => setScreen?.('admin-analytics')} style={{ padding:'10px 20px', fontSize:13 }}>📊 View Analytics</Button>
+            <Button variant="ghost" onClick={() => setScreen?.('admin-settings')} style={{ padding:'10px 20px', fontSize:13 }}>⚙️ Settings</Button>
           </div>
         </CardBody>
       </Card>

@@ -118,7 +118,7 @@ export default function FacultyDashboard({ institution, currentUser, setScreen }
                 Rate your competency across all 9 domains to generate your personalised development plan. Takes about 20 minutes.
               </div>
             </div>
-            <Button onClick={() => setScreen('assessment')} style={{ whiteSpace:'nowrap' }}>
+            <Button onClick={() => setScreen('assess')} style={{ whiteSpace:'nowrap' }}>
               Start Assessment →
             </Button>
           </CardBody>
@@ -132,7 +132,7 @@ export default function FacultyDashboard({ institution, currentUser, setScreen }
           <div style={{ fontSize:15, fontWeight:700, color:'var(--text-primary)' }}>
             My Competency Snapshot
           </div>
-          <Button variant="ghost" onClick={() => setScreen('assessment')} style={{ padding:'6px 14px', fontSize:12 }}>
+          <Button variant="ghost" onClick={() => setScreen('assess')} style={{ padding:'6px 14px', fontSize:12 }}>
             {hasAssessed ? 'Update Assessment' : 'Start Assessment'}
           </Button>
         </div>
@@ -145,7 +145,7 @@ export default function FacultyDashboard({ institution, currentUser, setScreen }
                 const tni = getDomainTNI(d.id)
                 const { band, color, bg } = getTNIBand(tni)
                 return (
-                  <div key={d.id} onClick={() => setScreen('assessment')}
+                  <div key={d.id} onClick={() => setScreen('assess')}
                     style={{
                       padding:'12px 14px', borderRadius:'var(--radius-control)', cursor:'pointer',
                       border:`1.5px solid ${color}`, background:'var(--surface-card)',
