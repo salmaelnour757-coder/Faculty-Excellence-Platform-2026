@@ -1,0 +1,13 @@
+/* shared/theme/light.css — default surface palette (data-theme="light" or unset) */
+
+:root,
+[data-theme="light"] {
+  --surface-page: #F4F5F7;
+  --surface-card: #FFFFFF;
+  --surface-elevated: #FFFFFF;
+  --text-primary: #161A22;
+  --text-secondary: #5B6472;
+  --text-muted: #8A93A0;
+  --border: rgba(15, 20, 30, 0.08);
+  --shadow-color: 15, 20, 30;
+}

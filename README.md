@@ -4,23 +4,24 @@ A configurable, institution-agnostic faculty development platform. Identifies fa
 
 ## Start here
 
-1. **Read `docs/00-platform-design-spec.md` first.** It's the single source of truth for what this platform is and isn't.
-2. **Read `docs/03-design-system.md`** before touching any UI — the visual language (colors, cards, motion) is fixed and described there.
-3. **Each module has a one-page spec in `docs/02-module-specs/`** — read the spec for whatever module you're touching before writing code in its matching `src/modules/<name>/` folder.
+1. **Read `docs/00-platform-design-spec.md` first** — what this platform is and isn't.
+2. **Read `docs/03-design-system.md`** before touching any UI — colors, cards, motion are fixed and described there.
+3. **Each module has a spec in `docs/02-module-specs/`** — read it before writing code in the matching `src/modules/<name>/` folder.
+
+## Current state of this repo (as of this port)
+
+| Folder | Status |
+|---|---|
+| `src/modules/assess/` | Ported and restyled onto the token system. Business logic unchanged from the old repo. |
+| `src/modules/develop/` | Ported and consolidated — merges what used to be two separate, overlapping components (IDP + FacultyPathways) into one. Restyled. **Missing:** attendance + Jotform evaluation-status check (tracked in the module spec). |
+| `src/modules/evidence/`, `connect/`, `insight/` | Empty — not yet built. |
+| `src/modules/legacy/` | AdminDashboard, FacultyDashboard, Portfolio, InviteFaculty, Settings, Auth, Onboarding, CommCentre — carried over **mechanically** (import paths fixed only, not restyled or reconceptualized). These still work, but don't reflect the new design system or module scope yet. Expect to port each of these properly in turn. |
+| `src/infrastructure/` | Empty — Configuration, Integration, Communication not yet built as their own layer. |
+| `src/shared/theme/`, `src/shared/components/` | The actual token system and Card/Button/Pill primitives — everything ported so far uses these. |
 
 ## The rule that keeps this project sane
 
-**Spec before code.** If you're about to build something in `src/modules/<name>/` and there's no matching file in `docs/02-module-specs/<name>.md` describing purpose, inputs, outputs, and which DB tables it touches — write that first, even if it's three sentences. This isn't bureaucracy: it's what makes the codebase legible to the next person who opens it, and it's what gives this project a dated authorship trail for IP purposes.
-
-## Structure
-
-```
-docs/               — specs, schema, design system, changelog (read before src/)
-src/modules/         — the core loop (assess, develop, evidence) + connect, insight
-src/infrastructure/  — configuration, integration, communication — plumbing, not pages
-src/shared/          — components, theme tokens, lib (Supabase client, auth)
-src/config/          — institution.example.json — the "no institution hardcoded" pattern
-```
+**Spec before code.** If you're building in `src/modules/<name>/` and there's no matching file in `docs/02-module-specs/<name>.md`, write that first — even three sentences. This is what keeps the codebase legible and gives the project a dated authorship trail for IP purposes.
 
 ## What FEP explicitly does not do
 
@@ -28,13 +29,16 @@ src/config/          — institution.example.json — the "no institution hardco
 - Does not manage personnel records — syncs faculty roster from the HRIS
 - Does not run its own calendar — `.ics` export only
 - Does not build its own workshop evaluation form — reads submission status from the Quality Department's existing Jotform
-- Does not judge promotion readiness or touch the promotion committee process — Evidence organizes the record, nothing more
+- Does not judge promotion readiness or touch the promotion committee process
 
-If you find yourself building any of the above inside FEP, stop — it means either the scope has drifted or there's a real integration gap worth flagging, not silently working around.
+## Before you run this
+
+- Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in a `.env.local` file (already gitignored). The old repo had these hardcoded as fallback defaults directly in source — removed in this port. The client now throws clearly if they're missing instead of falling back silently.
+- `npm install` — dependencies unchanged from the old repo's `package.json`.
 
 ## Workflow
 
-No CLI, no local dev server debugging against Vercel logs. Download the repo as a zip from GitHub, edit locally, replace/add files, and push through GitHub Desktop.
+No CLI-based deploy debugging. Download the repo as a zip from GitHub, edit locally, replace/add files, push through GitHub Desktop.
 
 ## Contributors
 
@@ -42,4 +46,4 @@ No CLI, no local dev server debugging against Vercel logs. Download the repo as 
 - Dr. Sara Ali
 - Mr. Khabab Abdelmonem
 
-See `LICENSE` (Business Source License 1.1) for usage terms.
+See `LICENSE` (Business Source License 1.1 — bracketed terms still need filling in, see the note at the bottom of that file).

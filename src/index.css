@@ -1,0 +1,16 @@
+@import './shared/theme/tokens.css';
+@import './shared/theme/light.css';
+@import './shared/theme/dark.css';
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, #root {
+  height: 100%;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-size: 14px;
+  color: var(--text-primary);
+  background: var(--surface-page);
+}
+
+button { font-family: inherit; cursor: pointer; }
+input, select, textarea { font-family: inherit; }

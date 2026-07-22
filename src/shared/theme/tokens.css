@@ -1,0 +1,34 @@
+/* shared/theme/tokens.css
+   Customizable (institution-set) brand colors + derived rules.
+   Default values are the shipped example theme — any institution overrides
+   --brand-primary/secondary/accent via Configuration, everything else follows.
+*/
+
+:root {
+  --brand-primary: #1B2A4A;
+  --brand-secondary: #B08D3E;
+  --brand-accent: #2E6E6E;
+
+  --ease: cubic-bezier(.4, 0, .2, 1);
+  --dur-micro: 150ms;
+  --dur-panel: 250ms;
+  --dur-page: 400ms;
+
+  --radius-card: 16px;
+  --radius-control: 8px;
+  --radius-pill: 999px;
+}
+
+/* Derived — never set these directly, they follow the three brand vars above */
+:root {
+  --gloss-start: color-mix(in srgb, var(--brand-primary) 100%, white 18%);
+  --gloss-mid: var(--brand-primary);
+  --gloss-end: color-mix(in srgb, var(--brand-primary) 100%, black 22%);
+
+  --accent-text: var(--brand-accent);
+  --accent-fill: color-mix(in srgb, var(--brand-accent) 100%, white 12%);
+  --accent-shadow: color-mix(in srgb, var(--brand-accent) 45%, transparent);
+
+  --pill-bg: color-mix(in srgb, var(--brand-secondary) 16%, transparent);
+  --pill-text: color-mix(in srgb, var(--brand-secondary) 55%, var(--text-primary) 45%);
+}

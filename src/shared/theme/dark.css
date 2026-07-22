@@ -1,0 +1,12 @@
+/* shared/theme/dark.css — its own designed palette, not an inversion of light */
+
+[data-theme="dark"] {
+  --surface-page: #0E1420;
+  --surface-card: #161D2C;
+  --surface-elevated: #1C2536;
+  --text-primary: #EDEFF3;
+  --text-secondary: #9AA3B2;
+  --text-muted: #6B7484;
+  --border: rgba(255, 255, 255, 0.08);
+  --shadow-color: 0, 0, 0;
+}
