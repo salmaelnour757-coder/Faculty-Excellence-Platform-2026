@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import { supabase } from '../../shared/lib/supabase'
+import { Card, CardBody } from '../../shared/components/Card'
+import { Button } from '../../shared/components/Button'
+import { Pill } from '../../shared/components/Pill'
 
 const ROLES = [
   { value: 'faculty',          label: 'Faculty Member',   icon: '👤' },
@@ -74,226 +77,174 @@ export default function InviteFaculty({ institution, currentUser, onClose, onInv
   }
 
   const inp = {
-    width: '100%', padding: '10px 14px', borderRadius: 8,
-    border: '1px solid #DDE3EF', fontSize: 14,
-    outline: 'none', boxSizing: 'border-box', background: 'white'
+    width: '100%', padding: '10px 14px', borderRadius: 'var(--radius-control)',
+    border: '1px solid var(--border)', fontSize: 14,
+    outline: 'none', boxSizing: 'border-box', background: 'var(--surface-card)', color: 'var(--text-primary)',
+  }
+  const label = {
+    display: 'block', fontWeight: 600, color: 'var(--text-primary)',
+    fontSize: 13, marginBottom: 6
   }
 
   if (success) return (
     <div style={{ maxWidth: 600, margin: '0 auto' }}>
-      <div style={{
-        background: 'white', borderRadius: 12,
-        border: '1px solid #DDE3EF', padding: 32,
-        boxShadow: '0 2px 12px rgba(13,43,94,.08)', textAlign: 'center'
-      }}>
-        <div style={{ fontSize: 48, marginBottom: 12 }}>🎉</div>
-        <div style={{ fontSize: 18, fontWeight: 700, color: '#0D2B5E', marginBottom: 6 }}>
-          Invitation created for {form.full_name}
-        </div>
-        <div style={{ fontSize: 13, color: '#64748B', marginBottom: 24 }}>
-          Share this link — it expires in 7 days.
-        </div>
-
-        <div style={{
-          background: '#F2F5FA', borderRadius: 8, padding: '14px 16px',
-          border: '1px solid #DDE3EF', marginBottom: 16, textAlign: 'left'
-        }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: '#64748B',
-                        marginBottom: 6, textTransform: 'uppercase' }}>
-            Invitation Link
+      <Card hoverable={false}>
+        <CardBody style={{ padding: 32, textAlign: 'center' }}>
+          <div style={{ fontSize: 48, marginBottom: 12 }}>🎉</div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>
+            Invitation created for {form.full_name}
           </div>
-          <div style={{ fontSize: 12, color: '#0D2B5E',
-                        wordBreak: 'break-all', marginBottom: 10 }}>
-            {inviteLink}
+          <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 24 }}>
+            Share this link — it expires in 7 days.
           </div>
-          <button
-            onClick={() => navigator.clipboard.writeText(inviteLink)}
-            style={{
-              padding: '7px 16px', borderRadius: 8, border: 'none',
-              background: '#0D2B5E', color: 'white',
-              fontWeight: 700, fontSize: 12, cursor: 'pointer'
-            }}>
-            📋 Copy Link
-          </button>
-        </div>
 
-        <div style={{
-          background: '#EEF2FF', borderRadius: 8, padding: '12px 16px',
-          fontSize: 13, color: '#0D2B5E', marginBottom: 24, textAlign: 'left'
-        }}>
-          ℹ️ When {form.full_name} opens the link they will create a password.
-          Their role and profile will be set automatically.
-        </div>
+          <div style={{
+            background: 'var(--surface-page)', borderRadius: 'var(--radius-control)', padding: '14px 16px',
+            border: '1px solid var(--border)', marginBottom: 16, textAlign: 'left'
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)',
+                          marginBottom: 6, textTransform: 'uppercase' }}>
+              Invitation Link
+            </div>
+            <div style={{ fontSize: 12, color: 'var(--text-primary)',
+                          wordBreak: 'break-all', marginBottom: 10 }}>
+              {inviteLink}
+            </div>
+            <Button onClick={() => navigator.clipboard.writeText(inviteLink)} style={{ padding: '7px 16px', fontSize: 12 }}>
+              📋 Copy Link
+            </Button>
+          </div>
 
-        <div style={{ display: 'flex', gap: 10 }}>
-          <button
-            onClick={() => {
-              setSuccess(false)
-              setForm({ email:'', full_name:'', role:'faculty',
-                rank:'Assistant Professor', department:'', college:'', career_track:'B' })
-            }}
-            style={{
-              flex: 1, padding: 12, borderRadius: 8, border: 'none',
-              background: '#1A7B8C', color: 'white',
-              fontWeight: 700, fontSize: 13, cursor: 'pointer'
-            }}>
-            + Invite Another
-          </button>
-          <button onClick={onClose}
-            style={{
-              flex: 1, padding: 12, borderRadius: 8,
-              border: '1.5px solid #DDE3EF', background: 'white',
-              color: '#0D2B5E', fontWeight: 700, fontSize: 13, cursor: 'pointer'
-            }}>
-            Done
-          </button>
-        </div>
-      </div>
+          <div style={{
+            background: 'var(--pill-bg)', borderRadius: 'var(--radius-control)', padding: '12px 16px',
+            fontSize: 13, color: 'var(--text-primary)', marginBottom: 24, textAlign: 'left'
+          }}>
+            ℹ️ When {form.full_name} opens the link they will create a password.
+            Their role and profile will be set automatically.
+          </div>
+
+          <div style={{ display: 'flex', gap: 10 }}>
+            <Button
+              onClick={() => {
+                setSuccess(false)
+                setForm({ email:'', full_name:'', role:'faculty',
+                  rank:'Assistant Professor', department:'', college:'', career_track:'B' })
+              }}
+              style={{ flex: 1, padding: 12, fontSize: 13 }}>
+              + Invite Another
+            </Button>
+            <Button variant="secondary" onClick={onClose} style={{ flex: 1, padding: 12, fontSize: 13 }}>
+              Done
+            </Button>
+          </div>
+        </CardBody>
+      </Card>
     </div>
   )
 
   return (
     <div style={{ maxWidth: 600, margin: '0 auto' }}>
-      <div style={{
-        background: 'white', borderRadius: 12,
-        border: '1px solid #DDE3EF', padding: 32,
-        boxShadow: '0 2px 12px rgba(13,43,94,.08)'
-      }}>
-        <div style={{
-          display: 'flex', justifyContent: 'space-between',
-          alignItems: 'center', marginBottom: 24
-        }}>
-          <div style={{ fontSize: 18, fontWeight: 700, color: '#0D2B5E' }}>
-            ✉️ Invite Faculty Member
-          </div>
-          <button onClick={onClose}
-            style={{
-              background: 'none', border: 'none',
-              fontSize: 20, cursor: 'pointer', color: '#64748B'
-            }}>✕</button>
-        </div>
-
-        {/* Role selector */}
-        <div style={{ marginBottom: 20 }}>
-          <label style={{
-            display: 'block', fontWeight: 600, color: '#0D2B5E',
-            fontSize: 13, marginBottom: 8
-          }}>
-            Role *
-          </label>
+      <Card hoverable={false}>
+        <CardBody style={{ padding: 32 }}>
           <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(140px,1fr))',
-            gap: 8
+            display: 'flex', justifyContent: 'space-between',
+            alignItems: 'center', marginBottom: 24
           }}>
-            {ROLES.map(r => (
-              <button key={r.value} onClick={() => set('role', r.value)}
-                style={{
-                  padding: '10px 12px', borderRadius: 8, cursor: 'pointer',
-                  border: `2px solid ${form.role === r.value ? '#0D2B5E' : '#DDE3EF'}`,
-                  background: form.role === r.value ? '#EEF2FF' : 'white',
-                  display: 'flex', alignItems: 'center', gap: 8,
-                  fontSize: 13,
-                  fontWeight: form.role === r.value ? 700 : 400,
-                  color: '#0D2B5E'
-                }}>
-                <span>{r.icon}</span>
-                <span>{r.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Form fields */}
-        <div style={{
-          display: 'grid', gridTemplateColumns: '1fr 1fr',
-          gap: 14, marginBottom: 16
-        }}>
-          <div style={{ gridColumn: '1/-1' }}>
-            <label style={{
-              display: 'block', fontWeight: 600, color: '#0D2B5E',
-              fontSize: 13, marginBottom: 6
-            }}>Full Name *</label>
-            <input style={inp} value={form.full_name}
-              onChange={e => set('full_name', e.target.value)}
-              placeholder="e.g. Dr. Sara Ali" />
+            <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)' }}>
+              ✉️ Invite Faculty Member
+            </div>
+            <button onClick={onClose}
+              style={{
+                background: 'none', border: 'none',
+                fontSize: 20, cursor: 'pointer', color: 'var(--text-secondary)'
+              }}>✕</button>
           </div>
 
-          <div style={{ gridColumn: '1/-1' }}>
-            <label style={{
-              display: 'block', fontWeight: 600, color: '#0D2B5E',
-              fontSize: 13, marginBottom: 6
-            }}>Email Address *</label>
-            <input style={inp} type="email" value={form.email}
-              onChange={e => set('email', e.target.value)}
-              placeholder="e.g. sara.ali@gmu.ac.ae" />
-          </div>
-
-          <div>
-            <label style={{
-              display: 'block', fontWeight: 600, color: '#0D2B5E',
-              fontSize: 13, marginBottom: 6
-            }}>Academic Rank</label>
-            <select style={inp} value={form.rank}
-              onChange={e => set('rank', e.target.value)}>
-              {RANKS.map(r => <option key={r}>{r}</option>)}
-            </select>
-          </div>
-
-          <div>
-            <label style={{
-              display: 'block', fontWeight: 600, color: '#0D2B5E',
-              fontSize: 13, marginBottom: 6
-            }}>Career Track</label>
-            <select style={inp} value={form.career_track}
-              onChange={e => set('career_track', e.target.value)}>
-              {TRACKS.map(t => (
-                <option key={t.value} value={t.value}>{t.label}</option>
+          {/* Role selector */}
+          <div style={{ marginBottom: 20 }}>
+            <label style={label}>Role *</label>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(140px,1fr))',
+              gap: 8
+            }}>
+              {ROLES.map(r => (
+                <Pill key={r.value} active={form.role === r.value} onClick={() => set('role', r.value)}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 8, justifyContent: 'flex-start' }}>
+                  <span>{r.icon}</span>
+                  <span>{r.label}</span>
+                </Pill>
               ))}
-            </select>
+            </div>
           </div>
 
-          <div>
-            <label style={{
-              display: 'block', fontWeight: 600, color: '#0D2B5E',
-              fontSize: 13, marginBottom: 6
-            }}>Department</label>
-            <input style={inp} value={form.department}
-              onChange={e => set('department', e.target.value)}
-              placeholder="e.g. Medical Laboratory Sciences" />
-          </div>
-
-          <div>
-            <label style={{
-              display: 'block', fontWeight: 600, color: '#0D2B5E',
-              fontSize: 13, marginBottom: 6
-            }}>College</label>
-            <input style={inp} value={form.college}
-              onChange={e => set('college', e.target.value)}
-              placeholder="e.g. College of Health Sciences" />
-          </div>
-        </div>
-
-        {error && (
+          {/* Form fields */}
           <div style={{
-            background: '#FEE2E2', color: '#DC2626',
-            padding: '10px 14px', borderRadius: 8,
-            fontSize: 13, marginBottom: 16
+            display: 'grid', gridTemplateColumns: '1fr 1fr',
+            gap: 14, marginBottom: 16
           }}>
-            {error}
-          </div>
-        )}
+            <div style={{ gridColumn: '1/-1' }}>
+              <label style={label}>Full Name *</label>
+              <input style={inp} value={form.full_name}
+                onChange={e => set('full_name', e.target.value)}
+                placeholder="e.g. Dr. Sara Ali" />
+            </div>
 
-        <button onClick={handleInvite} disabled={loading}
-          style={{
-            width: '100%', padding: 13, borderRadius: 8, border: 'none',
-            background: loading ? '#94A3B8' : '#0D2B5E',
-            color: 'white', fontWeight: 700, fontSize: 15,
-            cursor: loading ? 'not-allowed' : 'pointer'
-          }}>
-          {loading ? 'Creating invitation...' : '✉️ Create Invitation'}
-        </button>
-      </div>
+            <div style={{ gridColumn: '1/-1' }}>
+              <label style={label}>Email Address *</label>
+              <input style={inp} type="email" value={form.email}
+                onChange={e => set('email', e.target.value)}
+                placeholder="e.g. sara.ali@gmu.ac.ae" />
+            </div>
+
+            <div>
+              <label style={label}>Academic Rank</label>
+              <select style={inp} value={form.rank}
+                onChange={e => set('rank', e.target.value)}>
+                {RANKS.map(r => <option key={r}>{r}</option>)}
+              </select>
+            </div>
+
+            <div>
+              <label style={label}>Career Track</label>
+              <select style={inp} value={form.career_track}
+                onChange={e => set('career_track', e.target.value)}>
+                {TRACKS.map(t => (
+                  <option key={t.value} value={t.value}>{t.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label style={label}>Department</label>
+              <input style={inp} value={form.department}
+                onChange={e => set('department', e.target.value)}
+                placeholder="e.g. Medical Laboratory Sciences" />
+            </div>
+
+            <div>
+              <label style={label}>College</label>
+              <input style={inp} value={form.college}
+                onChange={e => set('college', e.target.value)}
+                placeholder="e.g. College of Health Sciences" />
+            </div>
+          </div>
+
+          {error && (
+            <div style={{
+              background: 'color-mix(in srgb, #DC2626 10%, transparent)', color: '#DC2626',
+              padding: '10px 14px', borderRadius: 'var(--radius-control)',
+              fontSize: 13, marginBottom: 16
+            }}>
+              {error}
+            </div>
+          )}
+
+          <Button onClick={handleInvite} disabled={loading} style={{ width: '100%', padding: 13, fontSize: 15 }}>
+            {loading ? 'Creating invitation...' : '✉️ Create Invitation'}
+          </Button>
+        </CardBody>
+      </Card>
     </div>
   )
 }
