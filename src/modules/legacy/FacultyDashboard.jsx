@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../shared/lib/supabase'
+import { Card, CardBody } from '../../shared/components/Card'
+import { Button } from '../../shared/components/Button'
 
-export default function FacultyDashboard({ institution, currentUser, branding, setScreen }) {
+export default function FacultyDashboard({ institution, currentUser, setScreen }) {
   const [domains, setDomains]       = useState([])
   const [responses, setResponses]   = useState([])
   const [enrolments, setEnrolments] = useState([])
@@ -44,6 +46,9 @@ export default function FacultyDashboard({ institution, currentUser, branding, s
     return Math.round(avgTNI * 10) / 10
   }
 
+  // TNI severity bands are a fixed semantic scale (not assessed/low/moderate/
+  // high/critical), independent of institution branding — colors stay literal,
+  // same precedent as Insight's gap-severity scale elsewhere in the platform.
   function getTNIBand(tni) {
     if (tni === null) return { band:'not assessed', color:'#94A3B8', bg:'#F1F5F9' }
     if (tni >= 13) return { band:'critical', color:'#DC2626', bg:'#FEE2E2' }
@@ -60,89 +65,80 @@ export default function FacultyDashboard({ institution, currentUser, branding, s
 
   return (
     <div>
-      {/* Profile banner */}
-      <div style={{
-        background: branding.primary, borderRadius:12,
-        padding:'20px 24px', marginBottom:20,
-        display:'flex', alignItems:'center', gap:16
-      }}>
+      {/* Profile banner — flat brand-primary fill, not gloss (gradient stays
+          reserved for Card headers and primary buttons only) */}
+      <Card hoverable={false} style={{ marginBottom:20 }}>
         <div style={{
-          width:52, height:52, borderRadius:'50%', flexShrink:0,
-          background: branding.gold, color: branding.primary,
-          fontWeight:800, fontSize:18,
-          display:'flex', alignItems:'center', justifyContent:'center'
-        }}>{initials}</div>
-        <div style={{ flex:1 }}>
-          <div style={{ fontSize:18, fontWeight:800, color:'white' }}>
-            {currentUser?.full_name || 'Faculty Member'}
+          background: 'var(--brand-primary)', borderRadius: 'var(--radius-card)',
+          padding:'20px 24px', display:'flex', alignItems:'center', gap:16
+        }}>
+          <div style={{
+            width:52, height:52, borderRadius:'50%', flexShrink:0,
+            background: 'var(--brand-secondary)', color: 'var(--brand-primary)',
+            fontWeight:800, fontSize:18,
+            display:'flex', alignItems:'center', justifyContent:'center'
+          }}>{initials}</div>
+          <div style={{ flex:1 }}>
+            <div style={{ fontSize:18, fontWeight:800, color:'white' }}>
+              {currentUser?.full_name || 'Faculty Member'}
+            </div>
+            <div style={{ fontSize:13, color:'rgba(255,255,255,.65)', marginTop:3 }}>
+              {currentUser?.rank} · {currentUser?.department} · Track {currentUser?.career_track}
+            </div>
           </div>
-          <div style={{ fontSize:13, color:'rgba(255,255,255,.65)', marginTop:3 }}>
-            {currentUser?.rank} · {currentUser?.department} · Track {currentUser?.career_track}
+          <div style={{ display:'flex', gap:10 }}>
+            <div style={{ textAlign:'center', background:'rgba(255,255,255,.1)',
+                          padding:'8px 16px', borderRadius:'var(--radius-control)' }}>
+              <div style={{ fontSize:20, fontWeight:800, color: 'var(--brand-secondary)' }}>
+                {responses.length}
+              </div>
+              <div style={{ fontSize:11, color:'rgba(255,255,255,.6)' }}>Ratings</div>
+            </div>
+            <div style={{ textAlign:'center', background:'rgba(255,255,255,.1)',
+                          padding:'8px 16px', borderRadius:'var(--radius-control)' }}>
+              <div style={{ fontSize:20, fontWeight:800, color: 'var(--brand-secondary)' }}>
+                {enrolments.length}
+              </div>
+              <div style={{ fontSize:11, color:'rgba(255,255,255,.6)' }}>Pathways</div>
+            </div>
           </div>
         </div>
-        <div style={{ display:'flex', gap:10 }}>
-          <div style={{ textAlign:'center', background:'rgba(255,255,255,.1)',
-                        padding:'8px 16px', borderRadius:8 }}>
-            <div style={{ fontSize:20, fontWeight:800, color: branding.gold }}>
-              {responses.length}
-            </div>
-            <div style={{ fontSize:11, color:'rgba(255,255,255,.6)' }}>Ratings</div>
-          </div>
-          <div style={{ textAlign:'center', background:'rgba(255,255,255,.1)',
-                        padding:'8px 16px', borderRadius:8 }}>
-            <div style={{ fontSize:20, fontWeight:800, color: branding.gold }}>
-              {enrolments.length}
-            </div>
-            <div style={{ fontSize:11, color:'rgba(255,255,255,.6)' }}>Pathways</div>
-          </div>
-        </div>
-      </div>
+      </Card>
 
       {/* Assessment prompt */}
       {!hasAssessed && (
-        <div style={{
-          background:'white', borderRadius:12, padding:'20px 24px',
-          border:`2px solid ${branding.gold}`, marginBottom:20,
-          display:'flex', alignItems:'center', gap:16
-        }}>
-          <div style={{ fontSize:40 }}>📋</div>
-          <div style={{ flex:1 }}>
-            <div style={{ fontSize:15, fontWeight:700, color:'#0D2B5E', marginBottom:4 }}>
-              Complete your needs assessment
+        <Card hoverable={false} style={{ marginBottom:20, border:'2px solid var(--brand-secondary)' }}>
+          <CardBody style={{ display:'flex', alignItems:'center', gap:16 }}>
+            <div style={{ fontSize:40 }}>📋</div>
+            <div style={{ flex:1 }}>
+              <div style={{ fontSize:15, fontWeight:700, color:'var(--text-primary)', marginBottom:4 }}>
+                Complete your needs assessment
+              </div>
+              <div style={{ fontSize:13, color:'var(--text-secondary)' }}>
+                Rate your competency across all 9 domains to generate your personalised development plan. Takes about 20 minutes.
+              </div>
             </div>
-            <div style={{ fontSize:13, color:'#64748B' }}>
-              Rate your competency across all 9 domains to generate your personalised development plan. Takes about 20 minutes.
-            </div>
-          </div>
-          <button onClick={() => setScreen('assessment')} style={{
-            padding:'10px 24px', borderRadius:8, border:'none',
-            background: branding.gold, color: branding.primary,
-            fontWeight:700, fontSize:14, cursor:'pointer', whiteSpace:'nowrap'
-          }}>
-            Start Assessment →
-          </button>
-        </div>
+            <Button onClick={() => setScreen('assessment')} style={{ whiteSpace:'nowrap' }}>
+              Start Assessment →
+            </Button>
+          </CardBody>
+        </Card>
       )}
 
       {/* Domain snapshot */}
-      <div style={{ background:'white', borderRadius:10, border:'1px solid #DDE3EF',
-                    marginBottom:20, boxShadow:'0 2px 12px rgba(13,43,94,.06)' }}>
-        <div style={{ padding:'16px 20px', borderBottom:'1px solid #DDE3EF',
+      <Card hoverable={false} style={{ marginBottom:20 }}>
+        <div style={{ padding:'16px 20px', borderBottom:'1px solid var(--border)',
                       display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-          <div style={{ fontSize:15, fontWeight:700, color:'#0D2B5E' }}>
+          <div style={{ fontSize:15, fontWeight:700, color:'var(--text-primary)' }}>
             My Competency Snapshot
           </div>
-          <button onClick={() => setScreen('assessment')} style={{
-            padding:'6px 14px', borderRadius:8, border:'1.5px solid #DDE3EF',
-            background:'white', color:'#0D2B5E', fontWeight:600,
-            fontSize:12, cursor:'pointer'
-          }}>
+          <Button variant="ghost" onClick={() => setScreen('assessment')} style={{ padding:'6px 14px', fontSize:12 }}>
             {hasAssessed ? 'Update Assessment' : 'Start Assessment'}
-          </button>
+          </Button>
         </div>
-        <div style={{ padding:'16px 20px' }}>
+        <CardBody>
           {loading ? (
-            <div style={{ color:'#64748B', fontSize:13 }}>Loading...</div>
+            <div style={{ color:'var(--text-secondary)', fontSize:13 }}>Loading...</div>
           ) : (
             <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))', gap:10 }}>
               {domains.map(d => {
@@ -151,14 +147,15 @@ export default function FacultyDashboard({ institution, currentUser, branding, s
                 return (
                   <div key={d.id} onClick={() => setScreen('assessment')}
                     style={{
-                      padding:'12px 14px', borderRadius:8, cursor:'pointer',
-                      border:`1.5px solid ${color}`, background:'white',
-                      borderLeft:`4px solid ${color}`, transition:'all .15s'
+                      padding:'12px 14px', borderRadius:'var(--radius-control)', cursor:'pointer',
+                      border:`1.5px solid ${color}`, background:'var(--surface-card)',
+                      borderLeft:`4px solid ${color}`,
+                      transition:'transform var(--dur-micro) var(--ease), box-shadow var(--dur-panel) var(--ease)'
                     }}>
-                    <div style={{ fontSize:11, color:'#64748B', fontWeight:700, marginBottom:3 }}>
+                    <div style={{ fontSize:11, color:'var(--text-secondary)', fontWeight:700, marginBottom:3 }}>
                       D{d.domain_number}
                     </div>
-                    <div style={{ fontSize:12.5, fontWeight:700, color:'#0D2B5E',
+                    <div style={{ fontSize:12.5, fontWeight:700, color:'var(--text-primary)',
                                   marginBottom:6, lineHeight:1.3 }}>
                       {d.name}
                     </div>
@@ -168,7 +165,7 @@ export default function FacultyDashboard({ institution, currentUser, branding, s
                       </div>
                       <span style={{
                         fontSize:11, fontWeight:700, padding:'2px 8px',
-                        borderRadius:10, background: bg, color
+                        borderRadius:'var(--radius-pill)', background: bg, color
                       }}>
                         {band}
                       </span>
@@ -178,43 +175,43 @@ export default function FacultyDashboard({ institution, currentUser, branding, s
               })}
             </div>
           )}
-        </div>
-      </div>
+        </CardBody>
+      </Card>
 
       {/* Active pathways */}
       {enrolments.length > 0 && (
-        <div style={{ background:'white', borderRadius:10, border:'1px solid #DDE3EF',
-                      boxShadow:'0 2px 12px rgba(13,43,94,.06)' }}>
-          <div style={{ padding:'16px 20px', borderBottom:'1px solid #DDE3EF' }}>
-            <div style={{ fontSize:15, fontWeight:700, color:'#0D2B5E' }}>
+        <Card hoverable={false}>
+          <div style={{ padding:'16px 20px', borderBottom:'1px solid var(--border)' }}>
+            <div style={{ fontSize:15, fontWeight:700, color:'var(--text-primary)' }}>
               My Active Pathways
             </div>
           </div>
-          <div style={{ padding:'16px 20px' }}>
+          <CardBody>
             {enrolments.map(e => (
               <div key={e.id} style={{
                 display:'flex', alignItems:'center', gap:14,
-                padding:'12px 0', borderBottom:'1px solid #F1F5F9'
+                padding:'12px 0', borderBottom:'1px solid var(--border)'
               }}>
                 <div style={{ flex:1 }}>
-                  <div style={{ fontWeight:700, color:'#0D2B5E', fontSize:14 }}>
+                  <div style={{ fontWeight:700, color:'var(--text-primary)', fontSize:14 }}>
                     {e.pathways?.name}
                   </div>
-                  <div style={{ fontSize:12, color:'#64748B', marginTop:2 }}>
+                  <div style={{ fontSize:12, color:'var(--text-secondary)', marginTop:2 }}>
                     {e.pathways?.cpd_credits} CPD credits
                   </div>
-                  <div style={{ marginTop:8, height:6, background:'#DDE3EF',
+                  <div style={{ marginTop:8, height:6, background:'var(--border)',
                                 borderRadius:4, overflow:'hidden', maxWidth:200 }}>
                     <div style={{
                       height:'100%', borderRadius:4,
-                      background: branding.accent,
-                      width: `${e.progress_percent || 0}%`
+                      background: 'var(--brand-accent)',
+                      width: `${e.progress_percent || 0}%`,
+                      transition:'width var(--dur-page) var(--ease)'
                     }} />
                   </div>
                 </div>
                 <span style={{
                   fontSize:12, fontWeight:700, padding:'3px 10px',
-                  borderRadius:10,
+                  borderRadius:'var(--radius-pill)',
                   background: e.status === 'completed' ? '#DCFCE7' : '#CCFBF1',
                   color: e.status === 'completed' ? '#15803D' : '#0F766E'
                 }}>
@@ -222,8 +219,8 @@ export default function FacultyDashboard({ institution, currentUser, branding, s
                 </span>
               </div>
             ))}
-          </div>
-        </div>
+          </CardBody>
+        </Card>
       )}
     </div>
   )
