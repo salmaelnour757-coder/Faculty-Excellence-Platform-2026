@@ -36,8 +36,9 @@ import Portfolio from '../../modules/legacy/Portfolio'
 import InviteFaculty from '../../modules/legacy/InviteFaculty'
 import Settings from '../../modules/legacy/Settings'
 import CommCentre from '../../modules/legacy/CommCentre'
+import { ThemeToggle } from './ThemeToggle'
 
-export default function Shell({ currentUser, institution, onInstitutionUpdate }) {
+export default function Shell({ currentUser, institution, onInstitutionUpdate, theme, onToggleTheme }) {
   const [screen, setScreen] = useState('admin-dashboard')
   const [isAdmin, setIsAdmin] = useState(true)
 
@@ -168,6 +169,11 @@ export default function Shell({ currentUser, institution, onInstitutionUpdate })
                 {roleLabel[currentUser?.role] || 'Faculty'}
               </div>
             </div>
+            {onToggleTheme && (
+              <ThemeToggle theme={theme} onToggle={onToggleTheme}
+                style={{ background: 'transparent', border: '1px solid rgba(255,255,255,.15)',
+                         color: 'rgba(255,255,255,.6)', width: 30, height: 30, fontSize: 14 }} />
+            )}
             <button onClick={handleSignOut} title="Sign out"
               style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,.4)', cursor: 'pointer', fontSize: 16, padding: 4 }}>
               ↩

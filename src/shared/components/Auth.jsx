@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { Card, CardBody } from './Card'
 import { Button } from './Button'
+import { ThemeToggle } from './ThemeToggle'
 
-export default function Auth() {
+export default function Auth({ theme, onToggleTheme }) {
   const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading]   = useState(false)
@@ -36,8 +37,13 @@ export default function Auth() {
   return (
     <div style={{
       minHeight: '100vh', display: 'flex', alignItems: 'center',
-      justifyContent: 'center', background: 'var(--surface-page)', padding: 24
+      justifyContent: 'center', background: 'var(--surface-page)', padding: 24,
+      position: 'relative',
     }}>
+      {onToggleTheme && (
+        <ThemeToggle theme={theme} onToggle={onToggleTheme}
+          style={{ position: 'absolute', top: 20, right: 20 }} />
+      )}
       <div style={{ width: '100%', maxWidth: 420 }}>
 
         {/* Logo */}

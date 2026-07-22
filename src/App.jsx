@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './shared/lib/supabase'
+import { useTheme } from './shared/theme/useTheme'
 import Auth from './shared/components/Auth'
 import Shell from './shared/components/Shell'
 import Onboarding from './shared/components/Onboarding'
@@ -9,6 +10,7 @@ export default function App() {
   const [loading, setLoading]           = useState(true)
   const [institution, setInstitution]   = useState(null)
   const [currentUser, setCurrentUser]   = useState(null)
+  const [theme, toggleTheme]            = useTheme()
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -51,7 +53,7 @@ export default function App() {
     </div>
   )
 
-  if (!session) return <Auth />
+  if (!session) return <Auth theme={theme} onToggleTheme={toggleTheme} />
 
   if (!institution) return (
     <Onboarding
@@ -63,5 +65,5 @@ export default function App() {
     />
   )
 
-  return <Shell currentUser={currentUser} institution={institution} />
+  return <Shell currentUser={currentUser} institution={institution} theme={theme} onToggleTheme={toggleTheme} />
 }
