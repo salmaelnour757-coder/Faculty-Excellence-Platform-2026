@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import emailjs from '@emailjs/browser'
 import { TEMPLATE_CATEGORIES, withOverrides } from '../../shared/emailTemplates'
+import { Card, CardHeader, CardBody } from '../../shared/components/Card'
+import { Button } from '../../shared/components/Button'
+import { Pill } from '../../shared/components/Pill'
 
 // Fallback EmailJS credentials, used only if the institution hasn't set its
 // own in Settings > Communication yet.
@@ -8,10 +11,20 @@ const DEFAULT_SERVICE_ID  = 'service_mws5m4r'
 const DEFAULT_TEMPLATE_ID = 'template_csvofcd'
 const DEFAULT_PUBLIC_KEY  = 'RRDUQ9_AeAaPDWd9K'
 
+// Trigger badge colors are semantic status indicators (automatic vs manual),
+// not app brand chrome, so they stay literal — same precedent as elsewhere
+// in the legacy Settings page (flagship/approval badges, role colors).
 const TRIGGER_COLORS = {
-  automatic: { bg: '#DCFCE7', color: '#15803D', label: 'Automatic' },
-  manual:    { bg: '#EEF2FF', color: '#0D2B5E', label: 'Manual'    },
+  automatic: { bg: 'color-mix(in srgb, #16A34A 14%, transparent)', color: '#15803D', label: 'Automatic' },
+  manual:    { bg: 'var(--pill-bg)', color: 'var(--pill-text)', label: 'Manual' },
 }
+
+const inputStyle = {
+  width:'100%', padding:'9px 12px', borderRadius:'var(--radius-control)',
+  border:'1px solid var(--border)', fontSize:13, outline:'none',
+  boxSizing:'border-box', background:'var(--surface-card)', color:'var(--text-primary)',
+}
+const labelStyle = { display:'block', fontWeight:600, color:'var(--text-primary)', fontSize:13, marginBottom:6 }
 
 export default function CommCentre({ institution, currentUser }) {
   const [activeCategory, setActiveCategory] = useState('All')
@@ -28,8 +41,8 @@ export default function CommCentre({ institution, currentUser }) {
     ? templates
     : templates.filter(t => t.category === activeCategory)
 
-  const serviceId  = institution?.comms_settings?.emailjs_service_id  || DEFAULT_SERVICE_ID
-  const templateId = institution?.comms_settings?.emailjs_template_id || DEFAULT_TEMPLATE_ID
+  const serviceId   = institution?.comms_settings?.emailjs_service_id  || DEFAULT_SERVICE_ID
+  const templateId  = institution?.comms_settings?.emailjs_template_id || DEFAULT_TEMPLATE_ID
   const publicKey   = institution?.comms_settings?.emailjs_public_key  || DEFAULT_PUBLIC_KEY
 
   function selectTemplate(t) {
@@ -86,66 +99,55 @@ export default function CommCentre({ institution, currentUser }) {
       <div style={{ width:300, flexShrink:0 }}>
 
         {/* Category filters */}
-        <div style={{ background:'white', borderRadius:10, border:'1px solid #DDE3EF',
-                      padding:12, marginBottom:12,
-                      boxShadow:'0 2px 12px rgba(13,43,94,.06)' }}>
-          <div style={{ fontSize:11, fontWeight:700, color:'#64748B',
-                        textTransform:'uppercase', letterSpacing:.5,
-                        marginBottom:8 }}>
-            Categories
-          </div>
-          {TEMPLATE_CATEGORIES.map(cat => (
-            <button key={cat} onClick={() => setActiveCategory(cat)}
-              style={{
-                display:'block', width:'100%', textAlign:'left',
-                padding:'7px 10px', borderRadius:8, border:'none',
-                cursor:'pointer', fontSize:13, marginBottom:2,
-                fontWeight: activeCategory === cat ? 700 : 400,
-                background: activeCategory === cat ? '#EEF2FF' : 'transparent',
-                color: activeCategory === cat ? '#0D2B5E' : '#64748B',
-              }}>
-              {cat}
-              <span style={{ float:'right', fontSize:11, color:'#94A3B8' }}>
-                {cat === 'All'
-                  ? templates.length
-                  : templates.filter(t => t.category === cat).length}
-              </span>
-            </button>
-          ))}
-        </div>
+        <Card hoverable={false} style={{ marginBottom:12 }}>
+          <CardBody style={{ padding:14 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:'var(--text-secondary)',
+                          textTransform:'uppercase', letterSpacing:.5,
+                          marginBottom:10 }}>
+              Categories
+            </div>
+            <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+              {TEMPLATE_CATEGORIES.map(cat => (
+                <Pill key={cat} active={activeCategory === cat} onClick={() => setActiveCategory(cat)}>
+                  {cat} · {cat === 'All' ? templates.length : templates.filter(t => t.category === cat).length}
+                </Pill>
+              ))}
+            </div>
+          </CardBody>
+        </Card>
 
         {/* Template list */}
-        <div style={{ background:'white', borderRadius:10, border:'1px solid #DDE3EF',
-                      boxShadow:'0 2px 12px rgba(13,43,94,.06)', overflow:'hidden' }}>
+        <Card hoverable={false} style={{ overflow:'hidden' }}>
           {filtered.map((t, i) => {
             const tc = TRIGGER_COLORS[t.trigger]
+            const isSelected = selectedTemplate?.id === t.id
             return (
               <div key={t.id} onClick={() => selectTemplate(t)}
                 style={{
                   padding:'12px 14px', cursor:'pointer',
-                  borderBottom: i < filtered.length-1 ? '1px solid #F1F5F9' : 'none',
-                  background: selectedTemplate?.id === t.id ? '#EEF2FF' : 'white',
-                  borderLeft: selectedTemplate?.id === t.id ? '3px solid #0D2B5E' : '3px solid transparent',
-                  transition:'all .15s'
+                  borderBottom: i < filtered.length-1 ? '1px solid var(--border)' : 'none',
+                  background: isSelected ? 'var(--pill-bg)' : 'var(--surface-card)',
+                  borderLeft: isSelected ? '3px solid var(--brand-primary)' : '3px solid transparent',
+                  transition:'background var(--dur-panel) var(--ease), border-color var(--dur-panel) var(--ease)'
                 }}>
-                <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4 }}>
+                <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
                   <span style={{ fontSize:16 }}>{t.icon}</span>
-                  <span style={{ fontSize:13, fontWeight:600, color:'#0D2B5E',
+                  <span style={{ fontSize:13, fontWeight:600, color:'var(--text-primary)',
                                  flex:1, lineHeight:1.3 }}>
                     {t.name}
                   </span>
                 </div>
                 <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-                  <span style={{ fontSize:10, color:'#94A3B8' }}>{t.category}</span>
+                  <span style={{ fontSize:10, color:'var(--text-secondary)' }}>{t.category}</span>
                   <span style={{ fontSize:10, fontWeight:700, padding:'1px 7px',
-                                 borderRadius:8, background:tc.bg, color:tc.color }}>
+                                 borderRadius:'var(--radius-pill)', background:tc.bg, color:tc.color }}>
                     {tc.label}
                   </span>
                 </div>
               </div>
             )
           })}
-        </div>
+        </Card>
       </div>
 
       {/* ── Right panel — template detail ── */}
@@ -153,9 +155,9 @@ export default function CommCentre({ institution, currentUser }) {
         {!selectedTemplate ? (
           <div style={{ display:'flex', alignItems:'center', justifyContent:'center',
                         height:'60vh', flexDirection:'column', gap:12,
-                        color:'#64748B', textAlign:'center' }}>
+                        color:'var(--text-secondary)', textAlign:'center' }}>
             <div style={{ fontSize:48 }}>✉️</div>
-            <div style={{ fontSize:16, fontWeight:700, color:'#0D2B5E' }}>
+            <div style={{ fontSize:16, fontWeight:700, color:'var(--text-primary)' }}>
               Select a template
             </div>
             <div style={{ fontSize:13 }}>
@@ -164,135 +166,99 @@ export default function CommCentre({ institution, currentUser }) {
           </div>
         ) : (
           <div>
-            {/* Template header */}
-            <div style={{ background:'white', borderRadius:10, border:'1px solid #DDE3EF',
-                          padding:'16px 20px', marginBottom:14,
-                          boxShadow:'0 2px 12px rgba(13,43,94,.06)' }}>
-              <div style={{ display:'flex', alignItems:'center',
-                            justifyContent:'space-between', marginBottom:8 }}>
-                <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-                  <span style={{ fontSize:24 }}>{selectedTemplate.icon}</span>
-                  <div>
-                    <div style={{ fontSize:16, fontWeight:700, color:'#0D2B5E' }}>
-                      {selectedTemplate.name}
-                    </div>
-                    <div style={{ fontSize:12, color:'#64748B', marginTop:2 }}>
-                      {selectedTemplate.category} ·{' '}
-                      <span style={{
-                        fontWeight:700,
-                        color: TRIGGER_COLORS[selectedTemplate.trigger].color
-                      }}>
-                        {TRIGGER_COLORS[selectedTemplate.trigger].label}
-                      </span>
-                    </div>
+            {/* Template header — gloss card header, the second of the two permitted gloss surfaces alongside primary buttons */}
+            <Card hoverable={false} style={{ marginBottom:14 }}>
+              <CardHeader
+                eyebrow={`${selectedTemplate.category} · ${TRIGGER_COLORS[selectedTemplate.trigger].label}`}
+                title={`${selectedTemplate.icon}  ${selectedTemplate.name}`}
+                right={
+                  <div style={{ display:'flex', gap:8 }}>
+                    <Button variant="secondary" onClick={() => { setEditMode(!editMode); setSendMode(false) }}
+                      style={{ padding:'8px 16px', fontSize:13 }}>
+                      ✏️ {editMode ? 'Stop Editing' : 'Edit Template'}
+                    </Button>
+                    <Button onClick={() => { setSendMode(!sendMode); setEditMode(false) }}
+                      style={{ padding:'8px 16px', fontSize:13 }}>
+                      📨 {sendMode ? 'Cancel' : 'Send Email'}
+                    </Button>
                   </div>
+                }
+              />
+              <CardBody>
+                <div style={{ background:'var(--surface-page)', borderRadius:'var(--radius-control)', padding:'10px 14px' }}>
+                  <span style={{ fontSize:11, fontWeight:700, color:'var(--text-secondary)',
+                                 textTransform:'uppercase', marginRight:8 }}>Subject:</span>
+                  {editMode ? (
+                    <input
+                      value={editedTemplate.subject}
+                      onChange={e => setEditedTemplate(t => ({ ...t, subject:e.target.value }))}
+                      style={{ width:'80%', padding:'4px 8px', borderRadius:6,
+                               border:'1px solid var(--border)', fontSize:13, outline:'none',
+                               background:'var(--surface-card)', color:'var(--text-primary)' }}
+                    />
+                  ) : (
+                    <span style={{ fontSize:13, color:'var(--text-primary)' }}>
+                      {editedTemplate?.subject}
+                    </span>
+                  )}
                 </div>
-                <div style={{ display:'flex', gap:8 }}>
-                  <button onClick={() => { setEditMode(!editMode); setSendMode(false) }}
-                    style={{
-                      padding:'8px 16px', borderRadius:8, cursor:'pointer',
-                      border:'1.5px solid #DDE3EF',
-                      background: editMode ? '#EEF2FF' : 'white',
-                      color:'#0D2B5E', fontWeight:600, fontSize:13
-                    }}>
-                    ✏️ {editMode ? 'Stop Editing' : 'Edit Template'}
-                  </button>
-                  <button onClick={() => { setSendMode(!sendMode); setEditMode(false) }}
-                    style={{
-                      padding:'8px 16px', borderRadius:8, border:'none',
-                      cursor:'pointer',
-                      background: sendMode ? '#1A7B8C' : '#0D2B5E',
-                      color:'white', fontWeight:600, fontSize:13
-                    }}>
-                    📨 {sendMode ? 'Cancel' : 'Send Email'}
-                  </button>
-                </div>
-              </div>
-
-              {/* Subject line */}
-              <div style={{ background:'#F2F5FA', borderRadius:8, padding:'10px 14px' }}>
-                <span style={{ fontSize:11, fontWeight:700, color:'#64748B',
-                               textTransform:'uppercase', marginRight:8 }}>Subject:</span>
-                {editMode ? (
-                  <input
-                    value={editedTemplate.subject}
-                    onChange={e => setEditedTemplate(t => ({ ...t, subject:e.target.value }))}
-                    style={{ width:'80%', padding:'4px 8px', borderRadius:6,
-                             border:'1px solid #DDE3EF', fontSize:13, outline:'none' }}
-                  />
-                ) : (
-                  <span style={{ fontSize:13, color:'#0D2B5E' }}>
-                    {editedTemplate?.subject}
-                  </span>
-                )}
-              </div>
-            </div>
+              </CardBody>
+            </Card>
 
             {/* Send form */}
             {sendMode && (
-              <div style={{ background:'white', borderRadius:10, border:'1px solid #DDE3EF',
-                            padding:'16px 20px', marginBottom:14,
-                            boxShadow:'0 2px 12px rgba(13,43,94,.06)' }}>
-                <div style={{ fontSize:14, fontWeight:700, color:'#0D2B5E', marginBottom:14 }}>
-                  Send to
-                </div>
-                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12,
-                              marginBottom:14 }}>
-                  <div>
-                    <label style={{ display:'block', fontWeight:600, color:'#0D2B5E',
-                                    fontSize:13, marginBottom:6 }}>Recipient Name *</label>
-                    <input
-                      value={sendForm.to_name}
-                      onChange={e => setSendForm(f => ({ ...f, to_name:e.target.value }))}
-                      placeholder="e.g. Dr. Sara Ali"
-                      style={{ width:'100%', padding:'9px 12px', borderRadius:8,
-                               border:'1px solid #DDE3EF', fontSize:13,
-                               outline:'none', boxSizing:'border-box' }}
-                    />
+              <Card hoverable={false} style={{ marginBottom:14 }}>
+                <CardBody>
+                  <div style={{ fontSize:14, fontWeight:700, color:'var(--text-primary)', marginBottom:14 }}>
+                    Send to
                   </div>
-                  <div>
-                    <label style={{ display:'block', fontWeight:600, color:'#0D2B5E',
-                                    fontSize:13, marginBottom:6 }}>Recipient Email *</label>
-                    <input
-                      type="email"
-                      value={sendForm.to_email}
-                      onChange={e => setSendForm(f => ({ ...f, to_email:e.target.value }))}
-                      placeholder="e.g. sara.ali@gmu.ac.ae"
-                      style={{ width:'100%', padding:'9px 12px', borderRadius:8,
-                               border:'1px solid #DDE3EF', fontSize:13,
-                               outline:'none', boxSizing:'border-box' }}
-                    />
+                  <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12,
+                                marginBottom:14 }}>
+                    <div>
+                      <label style={labelStyle}>Recipient Name *</label>
+                      <input
+                        value={sendForm.to_name}
+                        onChange={e => setSendForm(f => ({ ...f, to_name:e.target.value }))}
+                        placeholder="e.g. Dr. Sara Ali"
+                        style={inputStyle}
+                      />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Recipient Email *</label>
+                      <input
+                        type="email"
+                        value={sendForm.to_email}
+                        onChange={e => setSendForm(f => ({ ...f, to_email:e.target.value }))}
+                        placeholder="e.g. sara.ali@gmu.ac.ae"
+                        style={inputStyle}
+                      />
+                    </div>
                   </div>
-                </div>
 
-                {sendResult && (
-                  <div style={{
-                    padding:'10px 14px', borderRadius:8, fontSize:13,
-                    marginBottom:12,
-                    background: sendResult.success ? '#DCFCE7' : '#FEE2E2',
-                    color: sendResult.success ? '#15803D' : '#DC2626'
-                  }}>
-                    {sendResult.success ? '✓ ' : '✕ '}{sendResult.message}
-                  </div>
-                )}
+                  {sendResult && (
+                    <div style={{
+                      padding:'10px 14px', borderRadius:'var(--radius-control)', fontSize:13,
+                      marginBottom:12,
+                      background: sendResult.success
+                        ? 'color-mix(in srgb, #16A34A 12%, transparent)'
+                        : 'color-mix(in srgb, #DC2626 10%, transparent)',
+                      color: sendResult.success ? '#15803D' : '#DC2626'
+                    }}>
+                      {sendResult.success ? '✓ ' : '✕ '}{sendResult.message}
+                    </div>
+                  )}
 
-                <button onClick={handleSend} disabled={sending}
-                  style={{
-                    padding:'10px 28px', borderRadius:8, border:'none',
-                    background: sending ? '#94A3B8' : '#0D2B5E',
-                    color:'white', fontWeight:700, fontSize:14,
-                    cursor: sending ? 'not-allowed' : 'pointer'
-                  }}>
-                  {sending ? 'Sending...' : '📨 Send Now'}
-                </button>
-              </div>
+                  <Button onClick={handleSend} disabled={sending} style={{ padding:'10px 28px', fontSize:14 }}>
+                    {sending ? 'Sending...' : '📨 Send Now'}
+                  </Button>
+                </CardBody>
+              </Card>
             )}
 
-            {/* Email preview */}
-            <div style={{ background:'white', borderRadius:10, border:'1px solid #DDE3EF',
-                          boxShadow:'0 2px 12px rgba(13,43,94,.06)', overflow:'hidden' }}>
-
-              {/* Email header preview */}
+            {/* Email preview — deliberately simulates a real email client rendering
+                (fixed light background, dark text) independent of the app's own
+                light/dark theme, since that's what the recipient actually sees. */}
+            <Card hoverable={false} style={{ overflow:'hidden' }}>
               <div style={{
                 background: institution?.branding?.primary || '#0D2B5E',
                 padding:'20px 24px'
@@ -308,15 +274,14 @@ export default function CommCentre({ institution, currentUser }) {
                 </div>
               </div>
 
-              {/* Email body */}
-              <div style={{ padding:24 }}>
+              <div style={{ padding:24, background:'#FFFFFF' }}>
                 {editMode ? (
                   <textarea
                     value={editedTemplate.body}
                     onChange={e => setEditedTemplate(t => ({ ...t, body:e.target.value }))}
                     rows={16}
-                    style={{ width:'100%', padding:12, borderRadius:8,
-                             border:'1px solid #DDE3EF', fontSize:13,
+                    style={{ width:'100%', padding:12, borderRadius:'var(--radius-control)',
+                             border:'1px solid var(--border)', fontSize:13,
                              fontFamily:'monospace', outline:'none',
                              boxSizing:'border-box', resize:'vertical' }}
                   />
@@ -329,7 +294,6 @@ export default function CommCentre({ institution, currentUser }) {
                 )}
               </div>
 
-              {/* Email footer */}
               <div style={{
                 background:'#F2F5FA', padding:'14px 24px',
                 borderTop:'1px solid #DDE3EF',
@@ -338,7 +302,7 @@ export default function CommCentre({ institution, currentUser }) {
                 © 2026 Faculty Excellence Platform · {institution?.name} ·
                 Competency-driven. Evidence-informed. Built for HPE.
               </div>
-            </div>
+            </Card>
           </div>
         )}
       </div>
