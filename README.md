@@ -43,6 +43,20 @@ A configurable, institution-agnostic faculty development platform. Identifies fa
 - Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in a `.env.local` file (already gitignored). The old repo had these hardcoded as fallback defaults directly in source — removed in this port. The client now throws clearly if they're missing instead of falling back silently.
 - `npm install` — dependencies unchanged from the old repo's `package.json`.
 
+## Deployment (GitHub Pages)
+
+Not yet set up on GitHub itself — the workflow file is here (`.github/workflows/deploy.yml`), but two things need doing once in the repo's GitHub settings before it works:
+
+1. **Add two repository secrets** — Settings → Secrets and variables → Actions → New repository secret:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+   (Same values as your local `.env.local`. These are GitHub's own secret store — separate from `.env.local`, and never appear in any file in this repo.)
+2. **Enable Pages** — Settings → Pages → Source: "Deploy from a branch" → branch `gh-pages` (this branch gets created automatically the first time the workflow runs, so do step 1, push once, wait for the Action to finish, *then* come back and set this).
+
+The workflow triggers on every push to `main`. If your default branch is actually called something else, change `branches: [main]` in the workflow file to match.
+
+**One thing fixed vs. the old repo's setup:** `vite.config.js` now sets `base: '/Faculty-Excellence-Platform-2026/'`. The old repo's Pages deploy had no base path, no custom domain, and no `homepage` field — without one of those, GitHub Pages serves from a subdirectory and every asset 404s. If this repo ever gets renamed, that `base` value needs to match exactly.
+
 ## Workflow
 
 No CLI-based deploy debugging. Download the repo as a zip from GitHub, edit locally, replace/add files, push through GitHub Desktop.
