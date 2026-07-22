@@ -1,0 +1,18 @@
+{
+  "institution_name": "Example University",
+  "brand": {
+    "primary": "#1B2A4A",
+    "secondary": "#B08D3E",
+    "accent": "#2E6E6E",
+    "default_mode": "light"
+  },
+  "career_tracks": [],
+  "competency_domains": [],
+  "integration": {
+    "hris_sync_enabled": false,
+    "lms_provider": null,
+    "evaluation_provider": "jotform",
+    "calendar_export_only": true
+  },
+  "note": "This file is the pattern for keeping any specific institution (including GMU) out of the platform code. A real deployment sets these values via Configuration in the app, stored on the institutions table — this file only documents the shape, it isn't read directly at runtime."
+}
