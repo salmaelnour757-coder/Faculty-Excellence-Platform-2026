@@ -16,8 +16,10 @@ A configurable, institution-agnostic faculty development platform. Identifies fa
 | `src/modules/develop/` | Ported and consolidated — merges what used to be two separate, overlapping components (IDP + FacultyPathways) into one. Restyled. **Missing:** attendance + Jotform evaluation-status check (tracked in the module spec). |
 | `src/modules/evidence/` | Built — certificate auto-issuance (attendance + Jotform evaluation check), compiled record, print/export. |
 | `src/modules/develop/PathwaysAdmin.jsx` | Ported from PathwaysManagement.jsx (never wired into the old Shell) + new: jotform_form_id field, attendance-marking panel. |
-| `src/modules/connect/`, `insight/` | Empty — not yet built. |
-| `supabase/sql/00_complete_schema.sql` | Run this FIRST in the Supabase SQL editor — the new project is empty, this is the full base schema (institutions through certificates), not just an addition. |
+| `src/modules/connect/` | Empty — not yet built. |
+| `src/modules/insight/` | Built — three-tier drill-down heat map + metrics cards. Department scope uses domain-level columns, not item-level as the original spec called for (a scoped-down simplification). Role gating not yet enforced — reachable only via admin view for now. |
+| `src/infrastructure/configuration/OrgHierarchyAdmin.jsx` | Built — minimal college/department CRUD + faculty assignment. Insight depends on this being filled in. |
+| Database schema (SQL) | **Not in this repo, by design** — SQL migration files are delivered separately in chat, run directly in the Supabase SQL editor. Keeps schema/data operations out of git entirely. Two migrations so far: the complete base schema, then the org hierarchy (colleges/departments) — see chat history for the actual SQL. |
 | `supabase/functions/check-evaluation/` | Deploy this edge function and set `JOTFORM_API_KEY` as a Supabase secret (not a `VITE_` var) before Evidence's evaluation check will work. |
 | `src/modules/legacy/` | AdminDashboard, FacultyDashboard, Portfolio, InviteFaculty, Settings, Auth, Onboarding, CommCentre — carried over **mechanically** (import paths fixed only, not restyled or reconceptualized). These still work, but don't reflect the new design system or module scope yet. Expect to port each of these properly in turn. |
 | `src/infrastructure/` | Empty — Configuration, Integration, Communication not yet built as their own layer. |

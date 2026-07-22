@@ -20,9 +20,13 @@ Dated, one line per meaningful change. This is part of the IP evidence trail —
 - Removed hardcoded Supabase anon-key fallback found in the old public repo's supabase.js
 - Carried over remaining components (AdminDashboard, FacultyDashboard, Portfolio, InviteFaculty, Settings, Auth, Onboarding, CommCentre) as-is under src/modules/legacy/ pending their own proper ports
 - Built Evidence module: certificate auto-issuance checking attendance_confirmed + Jotform evaluation status, compiled certificate record with print/export
-- Added attendance/evaluation schema (supabase/sql/evidence_schema.sql): workshops.jotform_form_id, enrolments.attendance_confirmed/evaluation_confirmed, new certificates table with RLS
+- Added attendance/evaluation schema (delivered separately as SQL, not committed to the repo): workshops.jotform_form_id, enrolments.attendance_confirmed/evaluation_confirmed, new certificates table with RLS
 - Built supabase/functions/check-evaluation edge function — Jotform API key lives server-side only, never in the Vite app's env
 - Ported PathwaysManagement.jsx into PathwaysAdmin.jsx (was never wired into the old Shell's nav) — added jotform_form_id field to the workshop form and a new attendance-marking panel (attendance confirmation didn't exist anywhere in the old app)
 - Wired Evidence and PathwaysAdmin into Shell routing
-- Discovered the new Supabase project (xmufohombjmiikwlevko) is empty — no base schema exists yet, unlike the old project. Wrote supabase/sql/00_complete_schema.sql covering the full base schema, not just Evidence's additions.
+- Discovered the new Supabase project (xmufohombjmiikwlevko) is empty — no base schema exists yet, unlike the old project. Wrote the full base schema as SQL (delivered separately, not committed to the repo — SQL migrations are kept out of git by design going forward).
 - Corrected a modeling bug in the same pass: attendance/evaluation were placed on enrolments (pathway-level), but they're actually workshop-level events — moved to a new workshop_attendance table and patched Evidence.jsx and PathwaysAdmin.jsx to match
+- Built Insight: three-tier drill-down heat map (Institution colleges -> College departments -> Department individuals), gap-severity color scale, small-group suppression (n<2) on aggregate views, three metrics cards (one per core-loop module)
+- Added org hierarchy schema (colleges, departments, users.college_id/department_id) and a minimal OrgHierarchyAdmin panel to populate it — Insight has nothing to group by without this
+- Simplified from the original spec: all three heat map scopes use domain-level columns, not item-level at the department scope as originally specified — item-level would need a second column set; flagged as a known simplification, not silently dropped
+- Role gating not yet implemented at the data layer — Insight is currently reachable only via the admin view; tightening to real Provost/Dean/Chair-scoped access is follow-up work

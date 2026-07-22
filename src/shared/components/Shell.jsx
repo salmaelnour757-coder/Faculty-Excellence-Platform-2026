@@ -25,6 +25,8 @@ import Assess from '../../modules/assess/Assess'
 import Develop from '../../modules/develop/Develop'
 import Evidence from '../../modules/evidence/Evidence'
 import PathwaysAdmin from '../../modules/develop/PathwaysAdmin'
+import Insight from '../../modules/insight/Insight'
+import OrgHierarchyAdmin from '../../infrastructure/configuration/OrgHierarchyAdmin'
 import Portfolio from '../../modules/legacy/Portfolio'
 import InviteFaculty from '../../modules/legacy/InviteFaculty'
 import Settings from '../../modules/legacy/Settings'
@@ -41,6 +43,7 @@ export default function Shell({ currentUser, institution, onInstitutionUpdate })
     { id: 'admin-dashboard', label: 'Dashboard' },
     { id: 'admin-faculty',   label: 'Faculty' },
     { id: 'admin-invite',    label: 'Invite faculty' },
+    { id: 'admin-org',       label: 'Org structure' },
     { id: 'admin-analytics', label: 'Insight' },
     { id: 'admin-pathways',  label: 'Pathways admin' },
     { id: 'admin-settings',  label: 'Settings' },
@@ -62,7 +65,8 @@ export default function Shell({ currentUser, institution, onInstitutionUpdate })
     'admin-invite':       <InviteFaculty institution={institution} currentUser={currentUser}
                              onClose={() => setScreen('admin-dashboard')}
                              onInvited={() => setScreen('admin-dashboard')} />,
-    'admin-analytics':    <Placeholder title="Insight" desc="Institution/college/department heat map — not yet ported." />,
+    'admin-analytics':    <Insight institution={institution} />,
+    'admin-org':          <OrgHierarchyAdmin institution={institution} />,
     'admin-pathways':     <PathwaysAdmin institution={institution} />,
     'admin-settings':     <Settings institution={institution} currentUser={currentUser} onUpdate={onInstitutionUpdate} />,
     'faculty-dashboard':  <FacultyDashboard institution={institution} currentUser={currentUser} setScreen={setScreen} />,
