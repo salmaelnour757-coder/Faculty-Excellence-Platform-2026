@@ -849,7 +849,7 @@ function TracksSettings({ institution, onUpdate }) {
         onSave={save} saving={saving}>
         {tracks.map(t => (
           <div key={t.id} style={{ display:'grid', gap:10, padding:'16px 0',
-                                    borderBottom:'1px solid #F1F5F9',
+                                    borderBottom:'1px solid var(--border)',
                                     gridTemplateColumns:'auto 1fr 1fr' }}>
             <div style={{ display:'flex', alignItems:'center', justifyContent:'center',
                           background:t.color, color:'white', borderRadius:8,
@@ -914,16 +914,16 @@ function RolesSettings() {
           <thead>
             <tr>
               <th style={{ textAlign:'left', padding:'10px 12px', fontSize:11,
-                           fontWeight:700, color:'#64748B', textTransform:'uppercase',
-                           borderBottom:'2px solid #DDE3EF', background:'#F2F5FA' }}>
+                           fontWeight:700, color:'var(--text-secondary)', textTransform:'uppercase',
+                           borderBottom:'2px solid var(--border)', background:'var(--surface-page)' }}>
                 Permission
               </th>
               {roles.map(r => (
                 <th key={r.id} style={{ padding:'10px 8px', fontSize:11,
-                                        fontWeight:700, color:'#0D2B5E',
+                                        fontWeight:700, color:'var(--text-primary)',
                                         textTransform:'uppercase',
-                                        borderBottom:'2px solid #DDE3EF',
-                                        background:'#F2F5FA', textAlign:'center',
+                                        borderBottom:'2px solid var(--border)',
+                                        background:'var(--surface-page)', textAlign:'center',
                                         whiteSpace:'nowrap' }}>
                   {r.icon} {r.label}
                 </th>
@@ -933,20 +933,20 @@ function RolesSettings() {
           <tbody>
             {allPermissions.map((perm, i) => (
               <tr key={perm.id}>
-                <td style={{ padding:'10px 12px', fontSize:13, color:'#0D2B5E',
-                             fontWeight:500, borderBottom:'1px solid #F1F5F9',
-                             background: i%2===0 ? 'white' : '#F8FAFC' }}>
+                <td style={{ padding:'10px 12px', fontSize:13, color:'var(--text-primary)',
+                             fontWeight:500, borderBottom:'1px solid var(--border)',
+                             background: i%2===0 ? 'var(--surface-card)' : 'var(--surface-page)' }}>
                   {perm.label}
                 </td>
                 {roles.map(r => {
                   const has = r.permissions.includes('everything') || r.permissions.includes(perm.id)
                   return (
                     <td key={r.id} style={{ padding:'10px 8px', textAlign:'center',
-                                            borderBottom:'1px solid #F1F5F9',
-                                            background: i%2===0 ? 'white' : '#F8FAFC' }}>
+                                            borderBottom:'1px solid var(--border)',
+                                            background: i%2===0 ? 'var(--surface-card)' : 'var(--surface-page)' }}>
                       {has
                         ? <span style={{ color:'#16A34A', fontSize:16 }}>✓</span>
-                        : <span style={{ color:'#DDE3EF', fontSize:16 }}>–</span>
+                        : <span style={{ color:'var(--border)', fontSize:16 }}>–</span>
                       }
                     </td>
                   )
