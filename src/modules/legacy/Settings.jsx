@@ -3,6 +3,7 @@ import { supabase } from '../../shared/lib/supabase'
 import { Card, CardBody } from '../../shared/components/Card'
 import { Button } from '../../shared/components/Button'
 import { Pill } from '../../shared/components/Pill'
+import { EMAIL_TEMPLATES, TEMPLATE_CATEGORIES, withOverrides } from '../../shared/emailTemplates'
 
 const SECTIONS = [
   { id: 'institution',   icon: '🏛️', label: 'Institution Profile'    },
@@ -975,8 +976,9 @@ function CommsSettings({ institution, onUpdate }) {
     auto_workshop_reminder: true,
     auto_certificate:    true,
     auto_overdue_alert:  true,
+    templates:           {},
   }
-  const [form, setForm] = useState(institution?.comms_settings || defaults)
+  const [form, setForm] = useState({ ...defaults, ...(institution?.comms_settings || {}) })
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState('')
 
@@ -997,6 +999,25 @@ function CommsSettings({ institution, onUpdate }) {
       setTimeout(() => setSaved(''), 3000)
     } else {
       console.error('Comms settings save failed:', error)
+    }
+  }
+
+  async function saveTemplates(newTemplates) {
+    setForm(f => ({ ...f, templates: newTemplates }))
+    setSaving(true)
+    const { data, error } = await supabase
+      .from('institutions')
+      .update({ comms_settings: { ...form, templates: newTemplates } })
+      .eq('id', institution.id)
+      .select()
+      .single()
+    setSaving(false)
+    if (!error) {
+      setSaved('Template saved.')
+      if (onUpdate) onUpdate(data)
+      setTimeout(() => setSaved(''), 3000)
+    } else {
+      console.error('Template save failed:', error)
     }
   }
 
@@ -1033,6 +1054,11 @@ function CommsSettings({ institution, onUpdate }) {
         </div>
       </SettingsCard>
 
+      <TemplateLibraryCard
+        templateOverrides={form.templates}
+        onSaveTemplates={saveTemplates}
+        saving={saving} />
+
       <SettingsCard title="Automatic Email Triggers"
         subtitle="Toggle which emails send automatically without admin intervention"
         onSave={save} saving={saving}>
@@ -1049,6 +1075,117 @@ function CommsSettings({ institution, onUpdate }) {
         ))}
       </SettingsCard>
     </div>
+  )
+}
+
+// ── 7b. Notification & Reminder Template Library ─────────────────────────────
+
+function TemplateLibraryCard({ templateOverrides, onSaveTemplates, saving }) {
+  const [activeCategory, setActiveCategory] = useState('All')
+  const [selectedId, setSelectedId] = useState(null)
+  const [draft, setDraft] = useState(null)
+
+  const templates = withOverrides(templateOverrides)
+  const filtered = activeCategory === 'All' ? templates : templates.filter(t => t.category === activeCategory)
+  const selected = templates.find(t => t.id === selectedId)
+  const isCustomized = selectedId && templateOverrides?.[selectedId]
+
+  function selectTemplate(t) {
+    setSelectedId(t.id)
+    setDraft({ subject: t.subject, body: t.body })
+  }
+
+  function saveTemplate() {
+    onSaveTemplates({ ...templateOverrides, [selectedId]: draft })
+  }
+
+  function resetTemplate() {
+    const original = EMAIL_TEMPLATES.find(t => t.id === selectedId)
+    setDraft({ subject: original.subject, body: original.body })
+    const next = { ...templateOverrides }
+    delete next[selectedId]
+    onSaveTemplates(next)
+  }
+
+  return (
+    <SettingsCard title="Notification & Reminder Templates"
+      subtitle="Ready-made templates for every automated and manual email — pick one and customize its wording, or use it as shipped.">
+      <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:16 }}>
+        {TEMPLATE_CATEGORIES.map(cat => (
+          <Pill key={cat} active={activeCategory === cat} onClick={() => setActiveCategory(cat)}>{cat}</Pill>
+        ))}
+      </div>
+
+      <div style={{ display:'flex', gap:16, flexWrap:'wrap' }}>
+        <div style={{ width:260, flexShrink:0, maxHeight:440, overflowY:'auto',
+                      border:'1px solid var(--border)', borderRadius:'var(--radius-control)' }}>
+          {filtered.map((t, i) => (
+            <div key={t.id} onClick={() => selectTemplate(t)}
+              style={{
+                padding:'10px 12px', cursor:'pointer',
+                borderBottom: i < filtered.length-1 ? '1px solid var(--border)' : 'none',
+                background: selectedId === t.id ? 'var(--pill-bg)' : 'var(--surface-card)',
+                borderLeft: selectedId === t.id ? '3px solid var(--brand-primary)' : '3px solid transparent',
+              }}>
+              <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                <span style={{ fontSize:15 }}>{t.icon}</span>
+                <span style={{ fontSize:13, fontWeight:600, color:'var(--text-primary)', flex:1, lineHeight:1.3 }}>
+                  {t.name}
+                </span>
+              </div>
+              <div style={{ display:'flex', gap:6, marginTop:4, alignItems:'center', flexWrap:'wrap' }}>
+                <span style={{ fontSize:10, color:'var(--text-secondary)' }}>{t.category}</span>
+                <span style={{
+                  fontSize:9, fontWeight:700, padding:'1px 6px', borderRadius:'var(--radius-pill)',
+                  background: t.trigger === 'automatic' ? 'color-mix(in srgb, #16A34A 14%, transparent)' : 'var(--pill-bg)',
+                  color: t.trigger === 'automatic' ? '#15803D' : 'var(--pill-text)'
+                }}>
+                  {t.trigger === 'automatic' ? 'Automatic' : 'Manual'}
+                </span>
+                {templateOverrides?.[t.id] && (
+                  <span style={{ fontSize:9, color:'var(--brand-accent)', fontWeight:700 }}>● Customized</span>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ flex:1, minWidth:280 }}>
+          {!selected ? (
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:200,
+                          color:'var(--text-secondary)', fontSize:13, textAlign:'center' }}>
+              Select a template from the list to preview or edit its wording.
+            </div>
+          ) : (
+            <div>
+              <Field label="Subject">
+                <Inp value={draft.subject} onChange={e => setDraft(d => ({ ...d, subject:e.target.value }))} />
+              </Field>
+              <Field label="Body"
+                hint="Merge fields like {{to_name}} and {{institution_name}} are filled in automatically when the email sends.">
+                <textarea value={draft.body}
+                  onChange={e => setDraft(d => ({ ...d, body:e.target.value }))}
+                  rows={10}
+                  style={{ width:'100%', padding:'10px 14px', borderRadius:'var(--radius-control)',
+                           border:'1px solid var(--border)', fontSize:13, outline:'none',
+                           resize:'vertical', boxSizing:'border-box', background:'var(--surface-card)',
+                           color:'var(--text-primary)', fontFamily:'inherit' }} />
+              </Field>
+              <div style={{ display:'flex', gap:8 }}>
+                <Button onClick={saveTemplate} disabled={saving} style={{ padding:'8px 20px', fontSize:13 }}>
+                  {saving ? 'Saving...' : '💾 Save Template'}
+                </Button>
+                {isCustomized && (
+                  <Button variant="ghost" onClick={resetTemplate} style={{ padding:'8px 20px', fontSize:13 }}>
+                    Reset to default
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </SettingsCard>
   )
 }
 
