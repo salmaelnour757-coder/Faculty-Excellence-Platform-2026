@@ -1208,21 +1208,21 @@ function UsersSettings({ institution }) {
       <SettingsCard title="User Management"
         subtitle="View all users and manage their roles">
         {loading ? (
-          <div style={{ color:'#64748B' }}>Loading users...</div>
+          <div style={{ color:'var(--text-secondary)' }}>Loading users...</div>
         ) : users.length === 0 ? (
-          <div style={{ color:'#64748B', textAlign:'center', padding:20 }}>
+          <div style={{ color:'var(--text-secondary)', textAlign:'center', padding:20 }}>
             No users yet. Invite faculty to get started.
           </div>
         ) : (
           <div style={{ overflowX:'auto' }}>
             <table style={{ width:'100%', borderCollapse:'collapse' }}>
               <thead>
-                <tr style={{ background:'#F2F5FA' }}>
+                <tr style={{ background:'var(--surface-page)' }}>
                   {['Name','Email','Rank','Department','Role',''].map(h => (
                     <th key={h} style={{ textAlign:'left', padding:'10px 12px',
-                                         fontSize:11, fontWeight:700, color:'#64748B',
+                                         fontSize:11, fontWeight:700, color:'var(--text-secondary)',
                                          textTransform:'uppercase',
-                                         borderBottom:'2px solid #DDE3EF' }}>
+                                         borderBottom:'2px solid var(--border)' }}>
                       {h}
                     </th>
                   ))}
@@ -1233,40 +1233,40 @@ function UsersSettings({ institution }) {
                   const rc = roleColors[u.role] || roleColors.faculty
                   const init = u.full_name?.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || 'U'
                   return (
-                    <tr key={u.id} style={{ background: i%2===0 ? 'white' : '#F8FAFC' }}>
-                      <td style={{ padding:'10px 12px', borderBottom:'1px solid #F1F5F9' }}>
+                    <tr key={u.id} style={{ background: i%2===0 ? 'var(--surface-card)' : 'var(--surface-page)' }}>
+                      <td style={{ padding:'10px 12px', borderBottom:'1px solid var(--border)' }}>
                         <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                           <div style={{ width:28, height:28, borderRadius:'50%',
-                                        background:'#0D2B5E', color:'white',
+                                        background:'var(--brand-primary)', color:'white',
                                         fontSize:11, fontWeight:700,
                                         display:'flex', alignItems:'center',
                                         justifyContent:'center', flexShrink:0 }}>
                             {init}
                           </div>
-                          <span style={{ fontWeight:600, color:'#0D2B5E', fontSize:13 }}>
+                          <span style={{ fontWeight:600, color:'var(--text-primary)', fontSize:13 }}>
                             {u.full_name}
                           </span>
                         </div>
                       </td>
-                      <td style={{ padding:'10px 12px', fontSize:12, color:'#64748B',
-                                   borderBottom:'1px solid #F1F5F9' }}>
+                      <td style={{ padding:'10px 12px', fontSize:12, color:'var(--text-secondary)',
+                                   borderBottom:'1px solid var(--border)' }}>
                         {u.email}
                       </td>
-                      <td style={{ padding:'10px 12px', fontSize:12, color:'#64748B',
-                                   borderBottom:'1px solid #F1F5F9' }}>
+                      <td style={{ padding:'10px 12px', fontSize:12, color:'var(--text-secondary)',
+                                   borderBottom:'1px solid var(--border)' }}>
                         {u.rank || '—'}
                       </td>
-                      <td style={{ padding:'10px 12px', fontSize:12, color:'#64748B',
-                                   borderBottom:'1px solid #F1F5F9' }}>
+                      <td style={{ padding:'10px 12px', fontSize:12, color:'var(--text-secondary)',
+                                   borderBottom:'1px solid var(--border)' }}>
                         {u.department || '—'}
                       </td>
-                      <td style={{ padding:'10px 12px', borderBottom:'1px solid #F1F5F9' }}>
+                      <td style={{ padding:'10px 12px', borderBottom:'1px solid var(--border)' }}>
                         <select
                           value={u.role}
                           onChange={e => updateRole(u.id, e.target.value)}
                           disabled={saving === u.id}
                           style={{
-                            padding:'5px 10px', borderRadius:8, border:'none',
+                            padding:'5px 10px', borderRadius:'var(--radius-control)', border:'none',
                             fontSize:12, fontWeight:700, cursor:'pointer',
                             background: rc.bg, color: rc.color,
                             outline:'none'
@@ -1279,9 +1279,9 @@ function UsersSettings({ institution }) {
                           ))}
                         </select>
                       </td>
-                      <td style={{ padding:'10px 12px', borderBottom:'1px solid #F1F5F9' }}>
+                      <td style={{ padding:'10px 12px', borderBottom:'1px solid var(--border)' }}>
                         {saving === u.id && (
-                          <span style={{ fontSize:12, color:'#64748B' }}>Saving...</span>
+                          <span style={{ fontSize:12, color:'var(--text-secondary)' }}>Saving...</span>
                         )}
                       </td>
                     </tr>
