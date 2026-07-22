@@ -1115,11 +1115,11 @@ function PolicySettings({ institution, onUpdate }) {
               {[1,2,3].map(y => (
                 <button key={y} onClick={() => set('reassessment_cycle_years', y)}
                   style={{
-                    padding:'9px 20px', borderRadius:8, fontWeight:700,
+                    padding:'9px 20px', borderRadius:'var(--radius-control)', fontWeight:700,
                     fontSize:13, cursor:'pointer',
-                    border:`2px solid ${policy.reassessment_cycle_years===y ? '#0D2B5E' : '#DDE3EF'}`,
-                    background: policy.reassessment_cycle_years===y ? '#0D2B5E' : 'white',
-                    color: policy.reassessment_cycle_years===y ? 'white' : '#64748B'
+                    border:`2px solid ${policy.reassessment_cycle_years===y ? 'var(--brand-primary)' : 'var(--border)'}`,
+                    background: policy.reassessment_cycle_years===y ? 'var(--brand-primary)' : 'var(--surface-card)',
+                    color: policy.reassessment_cycle_years===y ? 'white' : 'var(--text-secondary)'
                   }}>
                   {y===1 ? 'Annual' : y===2 ? 'Biennial ★' : 'Every 3 Years'}
                 </button>
@@ -1146,8 +1146,8 @@ function PolicySettings({ institution, onUpdate }) {
                 value={policy.minimum_cpd_credits_per_year}
                 onChange={e => set('minimum_cpd_credits_per_year', parseInt(e.target.value))}
                 style={{ flex:1 }} />
-              <span style={{ background:'#0D2B5E', color:'white', padding:'6px 14px',
-                             borderRadius:8, fontWeight:700, fontSize:16,
+              <span style={{ background:'var(--brand-primary)', color:'white', padding:'6px 14px',
+                             borderRadius:'var(--radius-control)', fontWeight:700, fontSize:16,
                              minWidth:50, textAlign:'center' }}>
                 {policy.minimum_cpd_credits_per_year}
               </span>
